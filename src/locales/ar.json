@@ -1,0 +1,90 @@
+{
+  "sideBar": "العربية ",
+  "control_panel": "لوحة التحكم",
+  "setting": "الاعدادات",
+
+  "field": {
+    "form": "اضافة/تعديل",
+    "contPhone": "رقم الهاتف",
+    "email_address": "البريد الالكتروني",
+    "password": "كلمة المرور"
+  },
+  "missing": {
+    "missing": "المفقودات",
+    "missingPerson": "المفقودين",
+    "missingSomething": "المفقودات"
+  },
+  "helps_page": {
+    "helps": "المساعدات",
+    "needs": "طلبات المساعدة",
+    "available": "اعلانات الوفرة",
+    "featureImage": "صورة الحوجة",
+    "title": "الحالة",
+    "purpose": "الغرض",
+    "createdAt": "تاريخ الانشاء",
+    "need_call": "نداء مساعدة",
+    "missingSomething": "مفقودات",
+    "helpType": "نوع المساعدة",
+    "Published": "منشور",
+    "Pending": "غير منشور",
+    "cityid": "الولاية",
+    "areaid": "المحلية",
+    "address": "العنوان",
+    "description": "الوصف",
+    "isFeatured": "مميزة",
+    "youCanPay": "هل تستطيع الدفع",
+    "accompanyingName": "اسم المرافق",
+    "accompanyingMobile": "موبايل المرافق",
+    "helpStatus": "حالة المساعدة",
+    "cars": "المركبات",
+    "carNo": "رقم العربية",
+    "shasNo": "رقم الشاسي",
+    "image": "صورة"
+  },
+  "advertise": {
+    "advertise": "الاعلانات",
+    "title": "العنوان",
+    "desc": "الوصف",
+    "link": "رابط الاعلان",
+    "comName": "اسم الشركة"
+  },
+  "control": {
+    "addnew": "اضافة جديد",
+    "search": "بحث",
+    "action": "الاجراء",
+    "save": "حفظ",
+    "edit": "تعديل",
+    "delete": "مسح",
+    "publish": "نشر",
+    "unPublish": "الغاء النشر"
+  },
+  "validation": {
+    "name": "الاسم مطلوب"
+  },
+  "message": {
+    "Are_you_sure_to_delete_this_record": "هل أنت متأكد من حذف هذا السجل؟",
+    "You_cant_undo_this_operation": "لا يمكنك التراجع عن هذه العملية ...",
+    "pleaseSelectTheReport": "يجب اختيار التقرير",
+    "seleted_successfully": "تم الحذف بنجاح",
+    "yes": "نعم",
+    "no": "لا"
+  },
+  "theme": {
+    "hi_welcome_back": "مرحبًا بكم مرة أخرى",
+    "dont_have_an_account": "ليس لديك حساب؟",
+    "get_started": "البدء",
+    "sign_in_to_mms": "تسجيل الدخول",
+    "enter_your_details_below": "أدخل التفاصيل الخاصة بك أدناه.",
+    "forgot_password": "هل نسيت كلمة السر؟",
+    "login": "تسجيل الدخول",
+    "remember_me": "تذكرنى",
+    "by_registering": "بالتسجيل ، أنت توافق على سلامات",
+    "terms_of_service": "شروط الخدمة",
+    "and": "و",
+    "privacy_policy": "سياسة الخصوصية",
+    "already_have_an_account": "هل لديك حساب؟",
+    "register_user": "تسجيل مستخدم جديد",
+    "manage_the_work_more_effectively_with_MMS": "إدار اعمالك بشكل أكثر فعالية مع نظام سلامات",
+    "register": "تسجيل"
+  }
+}
