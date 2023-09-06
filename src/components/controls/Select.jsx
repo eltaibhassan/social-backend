@@ -20,6 +20,24 @@ const MySelect = (props) => {
 };
 export { MySelect };
 
+const MySelectProCats = (props) => {
+  const { name, label, value, error = null, onChange, options, ...other } = props;
+  return (
+    <FormControl variant="outlined" fullWidth sx={{ marginBottom: '10px' }} {...(error && { error: true })} {...other}>
+      <InputLabel>{label}</InputLabel>
+      <MuiSelect label={label} name={name} value={value} onChange={onChange}>
+        {options.map((item) => (
+          <MenuItem key={item.id} value={item.id}>
+            {item.arName}
+          </MenuItem>
+        ))}
+      </MuiSelect>
+      {error && <FormHelperText>{error}</FormHelperText>}
+    </FormControl>
+  );
+};
+export { MySelectProCats };
+
 const MySelectCategory = (props) => {
   const { name, label, value, error = null, onChange, options, ...other } = props;
   return (

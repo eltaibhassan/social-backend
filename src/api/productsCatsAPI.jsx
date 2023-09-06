@@ -1,13 +1,14 @@
-import { getFirestore, collection, doc, getDocs, setDoc, deleteDoc, addDoc, orderBy, query } from 'firebase/firestore';
+import { getFirestore, collection, doc, getDocs, setDoc, deleteDoc, addDoc, query } from 'firebase/firestore';
 import { firebase } from '../config';
 
 const DB = getFirestore(firebase);
 
 const getProCatsAPI = async () => {
   try {
+    // , orderBy('createdAt', 'desc')
     const res = [];
     const proCatsRef = collection(DB, 'proCats');
-    const q = query(proCatsRef, orderBy('createdAt', 'desc'));
+    const q = query(proCatsRef);
     const docRefs = await getDocs(q);
     docRefs.forEach((proCat) => {
       res.push({ id: proCat.id, ...proCat.data() });

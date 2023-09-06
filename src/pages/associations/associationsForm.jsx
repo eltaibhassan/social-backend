@@ -11,18 +11,15 @@ import { useAuth } from '../../hooks/useAuth';
 import useLocales from '../../hooks/useLocales';
 import useIsMountedRef from '../../hooks/useIsMountedRef';
 import { FormProvider, RHFTextField, RHFUploadAvatar, RHFSelect } from '../../components/hook-form';
-import { InsertEventAPI, UpdateEventAPI, myUploadFile } from '../../api';
-import { MyDatePicker, MyTimePicker } from '../../components/controls';
+import { InsertAssociationAPI, UpdateAssociationAPI, myUploadFile } from '../../api';
 
-const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
+const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const { user } = useAuth();
   const { translate } = useLocales();
   const { enqueueSnackbar } = useSnackbar();
   const isMountedRef = useIsMountedRef();
   const [phoneKey, setPhoneKey] = useState('+249');
   const [whatsappKey, setWhatsappKey] = useState('+249');
-  const [startDate, setStartDate] = useState(Date.now());
-  const [startTime, setStartTime] = useState(Date.now());
 
   const countryCodeArray = [
     { id: 'SA', arName: 'السعودية' },
@@ -38,22 +35,31 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   ];
 
   const ItemSchema = Yup.object().shape({
-    // id
-    featureImage: Yup.mixed(),
-    title: Yup.string().required(`${translate('events_page.title')} حقل مطلوب`),
+    //  logo,
+    // name,
+    // desc,
+    // website,
+    // facebook,
+    // twitter,
+    // youtube,
+    // whatsapp,
+    // phone,
+    // createdAt,
+    // createdName,
+    // createdBy,
+    // status,
+    // countryCode,
+
+    logo: Yup.mixed(),
+    name: Yup.string().required(`${translate('association_page.name')} حقل مطلوب`),
     // arrTitle
-    desc: Yup.string().required(`${translate('events_page.desc')} حقل مطلوب`),
-    link: Yup.string(),
-    linkText: Yup.string(),
-    eventType: Yup.string().required(`${translate('events_page.eventType')} حقل مطلوب`),
-    location: Yup.string().required(`${translate('events_page.location')} حقل مطلوب`),
-    hostedBy: Yup.string().required(`${translate('events_page.hostedBy')} حقل مطلوب`),
+    desc: Yup.string().required(`${translate('association_page.desc')} حقل مطلوب`),
+    website: Yup.string(),
+    facebook: Yup.string(),
+    twitter: Yup.string(),
+    youtube: Yup.string(),
     phone: Yup.string(),
     whatsapp: Yup.string(),
-    startDate: Yup.number().required(`${translate('events_page.startDate')} حقل مطلوب`),
-    startTime: Yup.number().required(`${translate('events_page.startTime')} حقل مطلوب`),
-    latitude: Yup.number(),
-    longitude: Yup.number(),
     createdAt: Yup.number(),
     createdName: Yup.string(),
     createdBy: Yup.string(),
@@ -62,21 +68,16 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   });
 
   const defaultValues = {
-    featureImage: recordForEdit?.featureImage || '',
-    title: recordForEdit?.title || '',
-    arrTitle: recordForEdit?.arrTitle || '',
+    logo: recordForEdit?.logo || '',
+    name: recordForEdit?.name || '',
+    arrName: recordForEdit?.arrName || '',
     desc: recordForEdit?.desc || '',
-    link: recordForEdit?.link || '',
-    linkText: recordForEdit?.linkText || '',
-    eventType: recordForEdit?.eventType || '',
-    location: recordForEdit?.location || '',
-    hostedBy: recordForEdit?.hostedBy || '',
+    website: recordForEdit?.website || '',
+    facebook: recordForEdit?.facebook || '',
+    twitter: recordForEdit?.twitter || '',
+    youtube: recordForEdit?.youtube || '',
     phone: recordForEdit?.phone || '',
     whatsapp: recordForEdit?.whatsapp || '',
-    startDate: recordForEdit?.startDate || new Date().getTime(),
-    startTime: recordForEdit?.startTime || new Date().getTime(),
-    latitude: recordForEdit?.latitude || 1.1,
-    longitude: recordForEdit?.longitude || 1.1,
     createdAt: recordForEdit?.createdAt || new Date().getTime(),
     createdName: recordForEdit?.createdName || user.personName,
     createdBy: recordForEdit?.createdBy || user.uid,
@@ -100,29 +101,38 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const onSubmit = async (data) => {
     try {
       let imageUrl = 'Nil';
-      if (data.featureImage.type === undefined) {
-        imageUrl = data.featureImage;
+      if (data.logo.type === undefined) {
+        imageUrl = data.logo;
       } else {
-        imageUrl = await myUploadFile(data.featureImage, 'pubicImg');
+        imageUrl = await myUploadFile(data.logo, 'pubicImg');
       }
 
       const newItme = {
-        // id: data.id,
-        featureImage: imageUrl,
-        title: data.title,
-        arrTitle: data.title.split(' '),
+        // logo,
+        // name,
+        // desc,
+        // website,
+        // facebook,
+        // twitter,
+        // youtube,
+        // whatsapp,
+        // phone,
+        // createdAt,
+        // createdName,
+        // createdBy,
+        // status,
+        // countryCode,
+
+        logo: imageUrl,
+        name: data.name,
+        arrName: data.name.split(' '),
         desc: data.desc,
-        link: data.link,
-        linkText: data.linkText,
-        eventType: data.eventType,
-        location: data.location,
-        hostedBy: data.hostedBy,
+        website: data.website,
+        facebook: data.facebook,
+        twitter: data.twitter,
+        youtube: data.youtube,
         phone: `${phoneKey}${data.phone}`,
         whatsapp: `${whatsappKey}${data.whatsapp}`,
-        startDate: data.startDate,
-        startTime: data.startTime,
-        latitude: data.latitude,
-        longitude: data.longitude,
         createdAt: data.createdAt,
         createdName: data.createdName,
         createdBy: data.createdBy,
@@ -132,13 +142,11 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
       if (recordForEdit === null) {
         console.log('------------------------------');
         console.log('will insert');
-        console.log(startTime);
-
-        InsertEventAPI(newItme);
+        InsertAssociationAPI(newItme);
       } else {
         console.log('------------------------------');
         console.log('will update');
-        UpdateEventAPI(data.id, newItme);
+        UpdateAssociationAPI(data.id, newItme);
       }
       reset();
       AfterAddOrEdit();
@@ -159,7 +167,7 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
 
       if (file) {
         setValue(
-          'featureImage',
+          'logo',
           Object.assign(file, {
             preview: URL.createObjectURL(file),
           })
@@ -182,47 +190,19 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
             }}
           >
             {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
-            <RHFTextField name="title" size="small" label={translate('events_page.title')} sx={{ pb: 1 }} />
+            <RHFTextField name="name" size="small" label={translate('association_page.name')} sx={{ pb: 1 }} />
             <RHFTextField
               name="desc"
               multiline
               rows={3}
               size="small"
-              label={translate('events_page.desc')}
+              label={translate('association_page.desc')}
               sx={{ pb: 1 }}
             />
-            <RHFTextField name="link" size="small" label={translate('events_page.link')} sx={{ pb: 1 }} />
-            <RHFTextField name="linkText" size="small" label={translate('events_page.linkText')} sx={{ pb: 1 }} />
-            <RHFTextField name="eventType" size="small" label={translate('events_page.eventType')} sx={{ pb: 1 }} />
-            <RHFTextField name="location" size="small" label={translate('events_page.location')} sx={{ pb: 1 }} />
-            <RHFTextField name="hostedBy" size="small" label={translate('events_page.hostedBy')} sx={{ pb: 1 }} />
-            <Box
-              sx={{
-                display: 'grid',
-                columnGap: 3,
-                rowGap: 0,
-                gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
-              }}
-            >
-              <MyDatePicker
-                label={translate('events_page.startDate')}
-                name="startDate"
-                size="small"
-                value={startDate}
-                onChange={(value) => {
-                  setStartDate(value.target.value);
-                }}
-              />
-              <MyTimePicker
-                label={translate('events_page.startTime')}
-                name="startTime"
-                size="small"
-                value={startTime}
-                onChange={(value) => {
-                  setStartTime(value.target.value);
-                }}
-              />
-            </Box>
+            <RHFTextField name="website" size="small" label={translate('association_page.website')} sx={{ pb: 1 }} />
+            <RHFTextField name="facebook" size="small" label={translate('association_page.facebook')} sx={{ pb: 1 }} />
+            <RHFTextField name="twitter" size="small" label={translate('association_page.twitter')} sx={{ pb: 1 }} />
+            <RHFTextField name="youtube" size="small" label={translate('association_page.youtube')} sx={{ pb: 1 }} />
 
             <Box
               sx={{
@@ -233,7 +213,7 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
                 // pb: 1,
               }}
             >
-              <RHFTextField name="phone" size="small" label={translate('events_page.phone')} sx={{ pb: 1 }} />
+              <RHFTextField name="phone" size="small" label={translate('association_page.phone')} sx={{ pb: 1 }} />
               <PhoneInput
                 sx={{ width: 20, height: 20, color: 'green', mr: 1 }}
                 onlyCountries={['sd', 'sa', 'ae', 'qa', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
@@ -252,7 +232,12 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
                 // pb: 1,
               }}
             >
-              <RHFTextField name="whatsapp" size="small" label={translate('events_page.whatsapp')} sx={{ pb: 1 }} />
+              <RHFTextField
+                name="whatsapp"
+                size="small"
+                label={translate('association_page.whatsapp')}
+                sx={{ pb: 1 }}
+              />
               <PhoneInput
                 sx={{ width: 20, height: 20, color: 'green', mr: 1 }}
                 onlyCountries={['sd', 'sa', 'ae', 'qa', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
@@ -262,9 +247,6 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
                 onChange={(code) => setWhatsappKey(code)}
               />
             </Box>
-            <RHFTextField name="latitude" size="small" label={translate('events_page.latitude')} sx={{ pb: 1 }} />
-            <RHFTextField name="longitude" size="small" label={translate('events_page.longitude')} sx={{ pb: 1 }} />
-            {/* <RHFTextField name="countryCode" size="small" label={translate('events_page.countryCode')} sx={{ pb: 1 }} /> */}
 
             <RHFSelect name="countryCode" label={translate('share.countryCode')} sx={{ mb: 1 }}>
               <option value="" />
@@ -275,10 +257,9 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
               ))}
             </RHFSelect>
           </Box>
-
           <Box sx={{ mb: 5 }}>
             <RHFUploadAvatar
-              name="featureImage"
+              name="logo"
               accept="image/*"
               maxSize={3145728}
               onDrop={handleDrop}
@@ -311,4 +292,4 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   );
 };
 
-export { EventsForm };
+export { AssociationsForm };

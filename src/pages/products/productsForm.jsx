@@ -11,18 +11,17 @@ import { useAuth } from '../../hooks/useAuth';
 import useLocales from '../../hooks/useLocales';
 import useIsMountedRef from '../../hooks/useIsMountedRef';
 import { FormProvider, RHFTextField, RHFUploadAvatar, RHFSelect } from '../../components/hook-form';
-import { InsertEventAPI, UpdateEventAPI, myUploadFile } from '../../api';
-import { MyDatePicker, MyTimePicker } from '../../components/controls';
+import { InsertProductAPI, UpdateProductAPI, myUploadFile } from '../../api';
+import { ProCatsSelector } from './proCats_Selector';
 
-const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
+const ProductsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const { user } = useAuth();
   const { translate } = useLocales();
   const { enqueueSnackbar } = useSnackbar();
   const isMountedRef = useIsMountedRef();
   const [phoneKey, setPhoneKey] = useState('+249');
   const [whatsappKey, setWhatsappKey] = useState('+249');
-  const [startDate, setStartDate] = useState(Date.now());
-  const [startTime, setStartTime] = useState(Date.now());
+  const [selectedProCat, setSelectedProCat] = useState(recordForEdit?.proCat || '');
 
   const countryCodeArray = [
     { id: 'SA', arName: 'السعودية' },
@@ -38,48 +37,46 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   ];
 
   const ItemSchema = Yup.object().shape({
-    // id
+    proCat: Yup.string(),
+    proName: Yup.string().required(`${translate('products_page.proName')} حقل مطلوب`),
+    // arrProName: Yup.string(),
+    desc: Yup.string(),
     featureImage: Yup.mixed(),
-    title: Yup.string().required(`${translate('events_page.title')} حقل مطلوب`),
-    // arrTitle
-    desc: Yup.string().required(`${translate('events_page.desc')} حقل مطلوب`),
-    link: Yup.string(),
-    linkText: Yup.string(),
-    eventType: Yup.string().required(`${translate('events_page.eventType')} حقل مطلوب`),
-    location: Yup.string().required(`${translate('events_page.location')} حقل مطلوب`),
-    hostedBy: Yup.string().required(`${translate('events_page.hostedBy')} حقل مطلوب`),
+    images: Yup.array(),
     phone: Yup.string(),
     whatsapp: Yup.string(),
-    startDate: Yup.number().required(`${translate('events_page.startDate')} حقل مطلوب`),
-    startTime: Yup.number().required(`${translate('events_page.startTime')} حقل مطلوب`),
-    latitude: Yup.number(),
+    unitBy: Yup.string().required(`${translate('products_page.unitBy')} حقل مطلوب`),
+    unitPrice: Yup.number().required(`${translate('products_page.unitPrice')} حقل مطلوب`),
+    address: Yup.string(),
     longitude: Yup.number(),
-    createdAt: Yup.number(),
+    conmmentList: Yup.array(),
+    isFeatured: Yup.boolean(),
     createdName: Yup.string(),
     createdBy: Yup.string(),
+    createdAt: Yup.number(),
     // status: Yup.string(),
     countryCode: Yup.string(),
   });
 
   const defaultValues = {
-    featureImage: recordForEdit?.featureImage || '',
-    title: recordForEdit?.title || '',
-    arrTitle: recordForEdit?.arrTitle || '',
+    proCat: recordForEdit?.proCat || '',
+    proName: recordForEdit?.proName || '',
+    arrProName: recordForEdit?.proName.split(' '),
     desc: recordForEdit?.desc || '',
-    link: recordForEdit?.link || '',
-    linkText: recordForEdit?.linkText || '',
-    eventType: recordForEdit?.eventType || '',
-    location: recordForEdit?.location || '',
-    hostedBy: recordForEdit?.hostedBy || '',
+    featureImage: recordForEdit?.featureImage || '',
+    images: recordForEdit?.images || [],
     phone: recordForEdit?.phone || '',
     whatsapp: recordForEdit?.whatsapp || '',
-    startDate: recordForEdit?.startDate || new Date().getTime(),
-    startTime: recordForEdit?.startTime || new Date().getTime(),
-    latitude: recordForEdit?.latitude || 1.1,
-    longitude: recordForEdit?.longitude || 1.1,
-    createdAt: recordForEdit?.createdAt || new Date().getTime(),
+    unitBy: recordForEdit?.unitBy || '',
+    unitPrice: recordForEdit?.unitPrice || 0,
+    address: recordForEdit?.address || '',
+    latitude: recordForEdit?.latitude || 0,
+    longitude: recordForEdit?.longitude || 0,
+    conmmentList: recordForEdit?.conmmentList || [],
+    isFeatured: recordForEdit?.isFeatured || false,
     createdName: recordForEdit?.createdName || user.personName,
     createdBy: recordForEdit?.createdBy || user.uid,
+    createdAt: recordForEdit?.createdAt || new Date().getTime(),
     status: recordForEdit?.status || 'Pending',
     countryCode: recordForEdit?.countryCode || 'QA',
   };
@@ -97,6 +94,11 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
     formState: { errors, isSubmitting },
   } = methods;
 
+  const onSelectProCats = (val) => {
+    setSelectedProCat(val);
+    setValue('cityid', val);
+  };
+
   const onSubmit = async (data) => {
     try {
       let imageUrl = 'Nil';
@@ -107,38 +109,36 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
       }
 
       const newItme = {
-        // id: data.id,
-        featureImage: imageUrl,
-        title: data.title,
-        arrTitle: data.title.split(' '),
+        proCat: data.proCat,
+        proName: data.proName,
+        arrProName: data.proName.split(' '),
         desc: data.desc,
-        link: data.link,
-        linkText: data.linkText,
-        eventType: data.eventType,
-        location: data.location,
-        hostedBy: data.hostedBy,
+        featureImage: imageUrl,
+        images: data.images,
         phone: `${phoneKey}${data.phone}`,
         whatsapp: `${whatsappKey}${data.whatsapp}`,
-        startDate: data.startDate,
-        startTime: data.startTime,
+        unitBy: data.unitBy,
+        unitPrice: data.unitPrice,
+        address: data.address,
         latitude: data.latitude,
         longitude: data.longitude,
-        createdAt: data.createdAt,
+        conmmentList: data.conmmentList,
+        isFeatured: data.isFeatured,
         createdName: data.createdName,
         createdBy: data.createdBy,
+        createdAt: data.createdAt,
         status: data.status,
         countryCode: data.countryCode,
       };
       if (recordForEdit === null) {
         console.log('------------------------------');
         console.log('will insert');
-        console.log(startTime);
 
-        InsertEventAPI(newItme);
+        InsertProductAPI(newItme);
       } else {
         console.log('------------------------------');
         console.log('will update');
-        UpdateEventAPI(data.id, newItme);
+        UpdateProductAPI(data.id, newItme);
       }
       reset();
       AfterAddOrEdit();
@@ -182,47 +182,16 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
             }}
           >
             {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
-            <RHFTextField name="title" size="small" label={translate('events_page.title')} sx={{ pb: 1 }} />
+            <ProCatsSelector onSelectProCats={onSelectProCats} selectedValue={selectedProCat} />
+            <RHFTextField name="proName" size="small" label={translate('products_page.proName')} sx={{ pb: 1 }} />
             <RHFTextField
               name="desc"
               multiline
               rows={3}
               size="small"
-              label={translate('events_page.desc')}
+              label={translate('products_page.desc')}
               sx={{ pb: 1 }}
             />
-            <RHFTextField name="link" size="small" label={translate('events_page.link')} sx={{ pb: 1 }} />
-            <RHFTextField name="linkText" size="small" label={translate('events_page.linkText')} sx={{ pb: 1 }} />
-            <RHFTextField name="eventType" size="small" label={translate('events_page.eventType')} sx={{ pb: 1 }} />
-            <RHFTextField name="location" size="small" label={translate('events_page.location')} sx={{ pb: 1 }} />
-            <RHFTextField name="hostedBy" size="small" label={translate('events_page.hostedBy')} sx={{ pb: 1 }} />
-            <Box
-              sx={{
-                display: 'grid',
-                columnGap: 3,
-                rowGap: 0,
-                gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
-              }}
-            >
-              <MyDatePicker
-                label={translate('events_page.startDate')}
-                name="startDate"
-                size="small"
-                value={startDate}
-                onChange={(value) => {
-                  setStartDate(value.target.value);
-                }}
-              />
-              <MyTimePicker
-                label={translate('events_page.startTime')}
-                name="startTime"
-                size="small"
-                value={startTime}
-                onChange={(value) => {
-                  setStartTime(value.target.value);
-                }}
-              />
-            </Box>
 
             <Box
               sx={{
@@ -233,7 +202,7 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
                 // pb: 1,
               }}
             >
-              <RHFTextField name="phone" size="small" label={translate('events_page.phone')} sx={{ pb: 1 }} />
+              <RHFTextField name="phone" size="small" label={translate('products_page.phone')} sx={{ pb: 1 }} />
               <PhoneInput
                 sx={{ width: 20, height: 20, color: 'green', mr: 1 }}
                 onlyCountries={['sd', 'sa', 'ae', 'qa', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
@@ -252,19 +221,22 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
                 // pb: 1,
               }}
             >
-              <RHFTextField name="whatsapp" size="small" label={translate('events_page.whatsapp')} sx={{ pb: 1 }} />
+              <RHFTextField name="whatsapp" size="small" label={translate('products_page.whatsapp')} sx={{ pb: 1 }} />
               <PhoneInput
                 sx={{ width: 20, height: 20, color: 'green', mr: 1 }}
                 onlyCountries={['sd', 'sa', 'ae', 'qa', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
                 country={'sd'}
                 enableSearch="true"
-                value={phoneKey}
+                value={whatsappKey}
                 onChange={(code) => setWhatsappKey(code)}
               />
             </Box>
-            <RHFTextField name="latitude" size="small" label={translate('events_page.latitude')} sx={{ pb: 1 }} />
-            <RHFTextField name="longitude" size="small" label={translate('events_page.longitude')} sx={{ pb: 1 }} />
-            {/* <RHFTextField name="countryCode" size="small" label={translate('events_page.countryCode')} sx={{ pb: 1 }} /> */}
+
+            <RHFTextField name="unitBy" size="small" label={translate('products_page.unitBy')} sx={{ pb: 1 }} />
+            <RHFTextField name="unitPrice" size="small" label={translate('products_page.unitPrice')} sx={{ pb: 1 }} />
+            <RHFTextField name="address" size="small" label={translate('products_page.address')} sx={{ pb: 1 }} />
+            <RHFTextField name="latitude" size="small" label={translate('products_page.latitude')} sx={{ pb: 1 }} />
+            <RHFTextField name="longitude" size="small" label={translate('products_page.longitude')} sx={{ pb: 1 }} />
 
             <RHFSelect name="countryCode" label={translate('share.countryCode')} sx={{ mb: 1 }}>
               <option value="" />
@@ -311,4 +283,4 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   );
 };
 
-export { EventsForm };
+export { ProductsForm };

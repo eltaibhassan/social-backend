@@ -21,15 +21,15 @@ import { EVENTS_FETCHING, EVENTS_SUCCESS, EVENTS_FAILED } from '../../context/ty
 import { useEventsState, useEventsDispatch } from '../../context';
 import { MyButton } from '../../components/controls';
 import { MySnackbar, ConfirmDialog, Popup, useTable, PublishMenu, MyProgress, Iconify } from '../../components/share';
-import { PublishStatusSelector } from './publishStatusSelector';
+import { PublishStatusSelector } from '../share/publishStatusSelector';
 import { EventsForm } from './eventsForm';
 import Image from '../../components/Image';
 import { shareToSocialMedia } from '../../api/pubFunction';
 
 const EventsPage = () => {
   const { translate } = useLocales();
-  const eventDispatch = useEventsDispatch();
-  const eventState = useEventsState();
+  const eventsDispatch = useEventsDispatch();
+  const eventsState = useEventsState();
   const { enqueueSnackbar } = useSnackbar();
   // const nav = useNavigate();
 
@@ -39,31 +39,31 @@ const EventsPage = () => {
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: 'success' });
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' });
   const [fetchDB, setFetchDB] = useState(null);
-  // const [publishState, setPublishState] = useState('');
+  const [publishState, setPublishState] = useState('');
 
   const headCells = [
-    { id: 'image', label: translate('events_page.image') },
+    { id: 'image', label: translate('share.image') },
     { id: 'title', label: translate('events_page.title') },
-    { id: 'createdAt', label: translate('events_page.createdAt') },
-    { id: 'status', label: translate('events_page.status') },
+    { id: 'createdAt', label: translate('share.createdAt') },
+    { id: 'status', label: translate('control.status') },
     { id: 'actions', label: translate('control.action'), disableSorting: true },
   ];
 
   useEffect(() => {
     const FetchData = async () => {
       try {
-        eventDispatch({ type: EVENTS_FETCHING });
+        eventsDispatch({ type: EVENTS_FETCHING });
         const result = await getEventsAPI();
-        eventDispatch({ type: EVENTS_SUCCESS, payload: result });
+        eventsDispatch({ type: EVENTS_SUCCESS, payload: result });
       } catch (e) {
-        eventDispatch({ type: EVENTS_FAILED });
+        eventsDispatch({ type: EVENTS_FAILED });
       }
     };
     FetchData();
-  }, [eventDispatch, fetchDB]);
+  }, [eventsDispatch, fetchDB]);
 
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } = useTable(
-    eventState.loading ? [] : eventState.events,
+    eventsState.loading ? [] : eventsState.events,
     headCells,
     filterFn
   );
@@ -74,13 +74,18 @@ const EventsPage = () => {
       fn: (items) => {
         if (value === '') return items;
         return items.filter(
-          (x) => x.carNo.toLowerCase().includes(value) || x.accompanyingName.toLowerCase().includes(value)
+          (x) =>
+            x.title.toLowerCase().includes(value) ||
+            x.location.toLowerCase().includes(value) ||
+            x.hostedBy.toLowerCase().includes(value) ||
+            x.phone.toLowerCase().includes(value)
         );
       },
     });
   };
 
   const onSelectPublishState = (value) => {
+    setPublishState(value);
     setFilterFn({
       fn: (items) => items.filter((x) => x.status === value),
     });
@@ -99,31 +104,62 @@ const EventsPage = () => {
 
   const onPublish = async (item) => {
     const newItem = {
-      id: item.id,
       featureImage: item.featureImage,
-
+      title: item.title,
+      arrTitle: item.title,
+      desc: item.desc,
+      link: item.link,
+      linkText: item.linkText,
+      eventType: item.eventType,
+      location: item.location,
+      hostedBy: item.hostedBy,
+      phone: item.phone,
+      whatsapp: item.whatsapp,
+      startDate: item.startDate,
+      startTime: item.startTime,
+      latitude: item.latitude,
+      longitude: item.longitude,
+      createdAt: item.createdAt,
+      createdName: item.createdName,
+      createdBy: item.createdBy,
       status: 'Published',
-      favoriteList: item.favoriteList,
+      countryCode: item.countryCode,
     };
-    await UpdateEventAPI(newItem);
+    await UpdateEventAPI(item.id, newItem);
+    setFetchDB(`edit${Math.random()}`);
     await shareToSocialMedia(item.title, item.featureImage, item.accompanyingMobile);
+    // reset();
     await new Promise((resolve) => setTimeout(resolve, 500));
     enqueueSnackbar('تم النشر بنجاح');
-    // setFetchDB(`edit${Math.random()}`);
   };
   const onUnPublish = async (item) => {
     const newItem = {
-      id: item.id,
       featureImage: item.featureImage,
       title: item.title,
+      arrTitle: item.title,
+      desc: item.desc,
+      link: item.link,
+      linkText: item.linkText,
+      eventType: item.eventType,
+      location: item.location,
+      hostedBy: item.hostedBy,
+      phone: item.phone,
+      whatsapp: item.whatsapp,
+      startDate: item.startDate,
+      startTime: item.startTime,
+      latitude: item.latitude,
+      longitude: item.longitude,
+      createdAt: item.createdAt,
+      createdName: item.createdName,
+      createdBy: item.createdBy,
       status: 'Pending',
-      favoriteList: item.favoriteList,
+      countryCode: item.countryCode,
     };
-    await UpdateEventAPI(newItem);
+    await UpdateEventAPI(item.id, newItem);
+    setFetchDB(`edit${Math.random()}`);
     // reset();
     await new Promise((resolve) => setTimeout(resolve, 500));
-    enqueueSnackbar('Create success!');
-    // setFetchDB(`edit${Math.random()}`);
+    enqueueSnackbar('تم الغاء النشر بنجاح');
   };
 
   const onDelete = async (id) => {
@@ -168,7 +204,7 @@ const EventsPage = () => {
                 ),
               }}
             />
-            <PublishStatusSelector onSelectPublishState={onSelectPublishState} selectedValue="" />
+            <PublishStatusSelector onSelectPublishState={onSelectPublishState} selectedValue={publishState} />
             {/* <RHFSelect name="purpose" label={translate('events_page.purpose')} sx={{ mb: 1 }}>
               {pubStatus.map((option) => (
                 <option key={option} value={option}>
@@ -191,7 +227,7 @@ const EventsPage = () => {
               }}
             />
           </Stack>
-          {eventState.loading ? (
+          {eventsState.loading ? (
             <MyProgress />
           ) : (
             <Scrollbar>
@@ -209,7 +245,7 @@ const EventsPage = () => {
                       </TableCell>
                       <TableCell>{item.title}</TableCell>
                       <TableCell>{format(item.createdAt, 'ar')}</TableCell>
-                      <TableCell>{translate(`events_page.${item.status}`)}</TableCell>
+                      <TableCell>{translate(`control.${item.status}`)}</TableCell>
                       {/* <TableCell>{moment('20111031', 'YYYYMMDD').fromNow()}</TableCell> */}
                       <TableCell>
                         <PublishMenu
@@ -242,7 +278,7 @@ const EventsPage = () => {
             </Scrollbar>
           )}
           <Popup
-            title={`${translate('form')} ${translate('events')}`}
+            title={`${translate('control.form')} ${translate('events_page.events')}`}
             openPopup={openPopup}
             setOpenPopup={setOpenPopup}
           >

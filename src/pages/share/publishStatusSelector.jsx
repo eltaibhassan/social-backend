@@ -16,7 +16,7 @@ const PublishStatusSelector = (props) => {
 
   return (
     <MySelect
-      label={translate('helps_page.areaid')}
+      label={translate('control.status')}
       name="arName"
       value={selectedValue}
       onChange={handlePublish}

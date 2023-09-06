@@ -1,98 +1,82 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Stack, Alert, Card, Box, Grid, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useSnackbar } from 'notistack';
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
+import { useAuth } from '../../hooks/useAuth';
 import useLocales from '../../hooks/useLocales';
 import useIsMountedRef from '../../hooks/useIsMountedRef';
 import { FormProvider, RHFTextField, RHFUploadAvatar, RHFSelect } from '../../components/hook-form';
-import { AddHelpAPI, UpdateHelpAPI } from '../../api/helpsAPI';
-import { getCarLettersAPI } from '../../api/carLettersAPI';
-import { CAR_LETTER_FETCHING, CAR_LETTER_SUCCESS, CAR_LETTER_FAILED } from '../../context/type';
-import { useCarLetterState, useCarLetterDispatch } from '../../context/carLetterContext';
+import { InsertNewsAPI, UpdateNewsAPI, myUploadFile } from '../../api';
+import { MyDatePicker } from '../../components/controls';
+// import {  } from '../../api';
 
-// checkCarAPI //AfterAddOrEdit
-
-const HelpForm = ({ recordForEdit }) => {
+const NewsForm = ({ recordForEdit, AfterAddOrEdit }) => {
+  const { user } = useAuth();
   const { translate } = useLocales();
   const { enqueueSnackbar } = useSnackbar();
   const isMountedRef = useIsMountedRef();
-  const [phoneKey, setPhoneKey] = useState('+249');
-  const locPurpose = 'sVfnoGyFShDF0o4HrHTt';
-  const carLetterDispatch = useCarLetterDispatch();
-  const carLetterState = useCarLetterState();
+  const [startDate, setStartDate] = useState(Date.now());
 
-  // arrTitle;
-  // carNoLetter;
-  // ccPhoneNo;
-  useEffect(() => {
-    const FetchData = async () => {
-      try {
-        carLetterDispatch({ type: CAR_LETTER_FETCHING });
-        const result = await getCarLettersAPI();
-        carLetterDispatch({ type: CAR_LETTER_SUCCESS, payload: result });
-      } catch (e) {
-        carLetterDispatch({ type: CAR_LETTER_FAILED });
-      }
-    };
-    FetchData();
-  }, [carLetterDispatch]);
+  const countryCodeArray = [
+    { id: 'SA', arName: 'السعودية' },
+    { id: 'AE', arName: 'الامارات' },
+    { id: 'QA', arName: 'قطر' },
+    { id: 'OM', arName: 'عمان' },
+    { id: 'KW', arName: 'الكويت' },
+    { id: 'BH', arName: 'البحرين' },
+    { id: 'EG', arName: 'مصر' },
+    { id: 'US', arName: 'امريكا' },
+    { id: 'GB', arName: 'بريطانيا' },
+    { id: 'CA', arName: 'كندا' },
+  ];
+
+  //   featureImage,
+  //  title,
+  //  arrTitle,
+  //  desc,
+  //  link,
+  //  newsCatId,
+  //  newsCatName,
+  //  newsDate,
+  //  createdAt,
+  //  createdName,
+  //  createdBy,
+  //  status,
+  //  countryCode,
 
   const ItemSchema = Yup.object().shape({
     featureImage: Yup.mixed(),
-    title: Yup.string(),
-    purpose: Yup.string(),
-    helpType: Yup.string(),
-    cityid: Yup.string(),
-    areaid: Yup.string(),
-    carNo: Yup.string().required('ادخل رقم مركبة صحيح'),
-    shasNo: Yup.string(),
-    address: Yup.string(),
-    description: Yup.string(),
-    latitude: Yup.number(),
-    longitude: Yup.number(),
-    isFeatured: Yup.bool(),
-    youCanPay: Yup.bool(),
-    accompanyingName: Yup.string(),
-    accompanyingMobile: Yup.string().required(translate('plase_insert_mobile_no')),
+    title: Yup.string().required(`${translate('news_page.title')} حقل مطلوب`),
+    // arrTitle
+    desc: Yup.string().required(`${translate('news_page.desc')} حقل مطلوب`),
+    link: Yup.string(),
+    newsCatId: Yup.string(),
+    newsCatName: Yup.string(),
+    newsDate: Yup.number().required(`${translate('news_page.startDate')} حقل مطلوب`),
     createdAt: Yup.number(),
-    createdBy: Yup.string(),
-    favoriteList: Yup.array(),
-    mobile: Yup.string(),
     createdName: Yup.string(),
-    status: Yup.string(),
-    helpStatus: Yup.string(),
+    createdBy: Yup.string(),
+    // status: Yup.string(),
+    countryCode: Yup.string(),
   });
 
   const defaultValues = {
-    id: recordForEdit?.id || 'Nil',
-    featureImage: recordForEdit?.featureImage || 'Nil',
+    featureImage: recordForEdit?.featureImage || '',
     title: recordForEdit?.title || '',
-    purpose: locPurpose,
-    helpType: recordForEdit?.helpType || 'Nil',
-    cityid: recordForEdit?.cityid || 'Nil',
-    areaid: recordForEdit?.areaid || 'Nil',
-    carNo: recordForEdit?.carNo || 0,
-    shasNo: recordForEdit?.shasNo || '',
-    address: recordForEdit?.address || '',
-    description: recordForEdit?.description || '',
-    latitude: 1.1,
-    longitude: 1.1,
-    isFeatured: true,
-    youCanPay: true,
-    accompanyingName: recordForEdit?.accompanyingName || '',
-    accompanyingMobile: recordForEdit?.accompanyingMobile || '',
+    arrTitle: recordForEdit?.arrTitle || '',
+    desc: recordForEdit?.desc || '',
+    link: recordForEdit?.link || '',
+    newsCatId: recordForEdit?.newsCatId || '',
+    newsCatName: recordForEdit?.newsCatName || '',
+    newsDate: recordForEdit?.newsDate || new Date().getTime(),
     createdAt: recordForEdit?.createdAt || new Date().getTime(),
-    createdBy: recordForEdit?.createdBy || '',
-    favoriteList: recordForEdit?.favoriteList || [],
-    mobile: recordForEdit?.mobile || 0,
-    createdName: recordForEdit?.createdName || '',
-    status: recordForEdit?.status || 'Requesting',
-    helpStatus: recordForEdit?.helpStatus || 'Pending',
+    createdName: recordForEdit?.createdName || user.personName,
+    createdBy: recordForEdit?.createdBy || user.uid,
+    status: recordForEdit?.status || 'Pending',
+    countryCode: recordForEdit?.countryCode || 'QA',
   };
 
   const methods = useForm({
@@ -110,56 +94,41 @@ const HelpForm = ({ recordForEdit }) => {
 
   const onSubmit = async (data) => {
     try {
-      let accompanyingMobile = `${phoneKey}${data.accompanyingMobile}`;
-      const firstChar = data.accompanyingMobile.substring(0, 1);
-      if (data.accompanyingMobile.length === 10 && firstChar === '0') {
-        accompanyingMobile = `${phoneKey}${data.accompanyingMobile.substring(1)}`;
-      }
-
-      let initTitle = '';
-      if (recordForEdit === null) {
-        initTitle = `تم سرقم سيارة ${data.description} من ${data.address} بالرقم ${data.carNo} 
-       Tel:${accompanyingMobile}`;
+      let imageUrl = 'Nil';
+      if (data.featureImage.type === undefined) {
+        imageUrl = data.featureImage;
       } else {
-        initTitle = data.title;
+        imageUrl = await myUploadFile(data.featureImage, 'pubicImg');
       }
 
       const newItme = {
-        id: data.id,
-        featureImage: data.featureImage,
-        title: initTitle,
-        arrTitle: initTitle.split(' '),
-        purpose: data.purpose,
-        helpType: data.helpType,
-        cityid: data.cityid,
-        areaid: data.areaid,
-        carNo: `${data.carNo}`,
-        carNoLetter: data.carNoLetter,
-        shasNo: data.shasNo,
-        address: data.address,
-        description: data.description,
-        latitude: data.latitude,
-        longitude: data.longitude,
-        isFeatured: data.isFeatured,
-        youCanPay: data.youCanPay,
-        accompanyingName: data.accompanyingName,
-        accompanyingMobile,
-        ccPhoneNo: phoneKey,
-        createdAt: new Date().getTime(),
-        createdBy: data.createdBy,
-        favoriteList: data.favoriteList,
-        mobile: accompanyingMobile,
+        featureImage: imageUrl,
+        title: data.title,
+        arrTitle: data.title.split(' '),
+        desc: data.desc,
+        link: data.link,
+        newsCatId: data.newsCatId,
+        newsCatName: data.newsCatName,
+        newsDate: data.newsDate,
+        createdAt: data.createdAt,
         createdName: data.createdName,
+        createdBy: data.createdBy,
         status: data.status,
-        helpStatus: data.helpStatus,
+        countryCode: data.countryCode,
       };
       if (recordForEdit === null) {
-        AddHelpAPI(newItme);
+        console.log('------------------------------');
+        console.log('will insert');
+        // console.log(startTime);
+
+        InsertNewsAPI(newItme);
       } else {
-        UpdateHelpAPI(newItme);
+        console.log('------------------------------');
+        console.log('will update');
+        UpdateNewsAPI(data.id, newItme);
       }
       reset();
-      // AfterAddOrEdit();
+      AfterAddOrEdit();
       await new Promise((resolve) => setTimeout(resolve, 500));
       enqueueSnackbar(recordForEdit === null ? 'Create success!' : 'Update success!');
     } catch (error) {
@@ -200,80 +169,37 @@ const HelpForm = ({ recordForEdit }) => {
             }}
           >
             {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
-            {/* <RHFSelect name="purpose" label={translate('helps_page.purpose')} sx={{ mb: 1 }}>
-              {purposeState.purposes.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.arName}
-                </option>
-              ))}
-            </RHFSelect> */}
-            {/* <RHFSelect name="helpType" label={translate('helps_page.helpType')} sx={{ mb: 1 }}>
-              {helpTypeState.helpTypes.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.arName}
-                </option>
-              ))}
-            </RHFSelect> */}
-            {/* <RHFTextField name="needName" size="small" label="اسم الدواء او التخصص او الجهاز" sx={{ pb: 1 }} /> */}
-            {/* <RHFSelect name="areaid" label={translate('helps_page.areaid')} sx={{ mb: 1 }}>
-              {localityState.localities.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.arName}
-                </option>
-              ))}
-            </RHFSelect> */}
-            <Box
-              sx={{
-                display: 'grid',
-                columnGap: 3,
-                rowGap: 0,
-                gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
-                // pb: 1,
-              }}
-            >
-              <RHFSelect name="carNoLetter" label={translate('helps_page.carNoLetter')} sx={{ mb: 1 }}>
-                {carLetterState.carLetters.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.name}
-                  </option>
-                ))}
-              </RHFSelect>
-              <RHFTextField name="carNo" size="small" label={translate('helps_page.carNo')} sx={{ pb: 1 }} />{' '}
-            </Box>
-
-            <RHFTextField name="shasNo" size="small" label={translate('helps_page.shasNo')} sx={{ pb: 1 }} />
-            <RHFTextField name="description" size="small" label={translate('helps_page.description')} sx={{ pb: 1 }} />
-            <RHFTextField name="address" size="small" label={translate('helps_page.address')} sx={{ pb: 1 }} />
+            <RHFTextField name="title" size="small" label={translate('news_page.title')} sx={{ pb: 1 }} />
             <RHFTextField
-              name="accompanyingName"
+              name="desc"
+              multiline
+              rows={3}
               size="small"
-              label={translate('helps_page.accompanyingName')}
+              label={translate('news_page.desc')}
               sx={{ pb: 1 }}
             />
-            <Box
-              sx={{
-                display: 'grid',
-                columnGap: 3,
-                rowGap: 0,
-                gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
-                // pb: 1,
+            <RHFTextField name="link" size="small" label={translate('news_page.link')} sx={{ pb: 1 }} />
+            <RHFTextField name="newsCatId" size="small" label={translate('news_page.newsCatId')} sx={{ pb: 1 }} />
+
+            <MyDatePicker
+              label={translate('news_page.newsDate')}
+              name="newsDate"
+              size="small"
+              value={startDate}
+              sx={{ pb: 1 }}
+              onChange={(value) => {
+                setStartDate(value.target.value);
               }}
-            >
-              <RHFTextField
-                name="accompanyingMobile"
-                size="small"
-                label={translate('helps_page.accompanyingMobile')}
-                sx={{ pb: 1 }}
-              />
-              <PhoneInput
-                sx={{ width: 20, height: 20, color: 'green', mr: 1 }}
-                onlyCountries={['sd', 'sa', 'ae', 'qa', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
-                country={'sd'}
-                enableSearch="true"
-                value={phoneKey}
-                onChange={(code) => setPhoneKey(code)}
-              />
-            </Box>
+            />
+
+            <RHFSelect name="countryCode" label={translate('share.countryCode')} sx={{ mb: 1 }}>
+              <option value="" />
+              {countryCodeArray.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.arName}
+                </option>
+              ))}
+            </RHFSelect>
           </Box>
 
           <Box sx={{ mb: 5 }}>
@@ -307,154 +233,8 @@ const HelpForm = ({ recordForEdit }) => {
           </Stack>
         </Card>
       </Grid>
-      {/* <LocalitySelector
-              onSelectLocality={onSelectLocality}
-              selectedValue={selectedLocality}
-              stateId={selectedState}
-            /> */}
-      {/* <RHFSelect name="cityid" label={translate('helps_page.cityid')}>
-              {stateState.states.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.arName}
-                </option>
-              ))}
-            </RHFSelect> */}
-      {/* <PurposeSelector onSelectPurpose={handlePurposeChange} selectedValue={selectedPurpose} /> */}
-      {/* <CarLetterSelector onSelectCarLetter={onSelectCarLetter} selectedValue={selectedCarLetter} /> */}
     </FormProvider>
   );
 };
 
-export { HelpForm };
-
-// if (data.id === 'Nil') {
-//   await AddHelpAPI({
-//     id: data.id,
-//     featureImage: data.featureImage,
-//     title,
-//     purpose: data.purpose,
-//     helpType: data.helpType,
-//     cityid: data.cityid,
-//     areaid: data.areaid,
-//     carNo: data.carNo,
-//     shasNo: data.shasNo,
-//     address: data.address,
-//     description: data.description,
-//     latitude: data.latitude,
-//     longitude: data.longitude,
-//     isFeatured: data.isFeatured,
-//     youCanPay: data.youCanPay,
-//     accompanyingName: data.accompanyingName,
-//     accompanyingMobile,
-//     helpStatus: data.helpStatus,
-//     favoriteList: data.favoriteList,
-//     mobile: accompanyingMobile,
-//     status: data.status,
-//     createdName: data.createdName,
-//     createdBy: data.createdBy,
-//     createdAt: new Date().getTime(),
-//   });
-// } else {
-//   UpdateHelpAPI({
-//     id: data.id,
-//     featureImage: data.featureImage,
-//     title,
-//     purpose: data.purpose,
-//     helpType: '',
-//     cityid: data.cityid,
-//     areaid: data.areaid,
-//     carNo: data.carNo,
-//     shasNo: data.shasNo,
-//     address: data.address,
-//     description: data.description,
-//     latitude: data.latitude,
-//     longitude: data.longitude,
-//     isFeatured: data.isFeatured,
-//     youCanPay: data.youCanPay,
-//     accompanyingName: data.accompanyingName,
-//     accompanyingMobile,
-//     helpStatus: data.helpStatus,
-//     favoriteList: data.favoriteList,
-//     mobile: accompanyingMobile,
-//     status: data.status,
-//     createdName: data.createdName,
-//     createdBy: data.createdBy,
-//     createdAt: new Date().getTime(),
-//   });
-// }
-// reset();
-// AfterAddOrEdit();
-// await new Promise((resolve) => setTimeout(resolve, 500));
-// enqueueSnackbar(recordForEdit === null ? 'Create success!' : 'Update success!');
-
-// const checkCar = await checkCarAPI(data.carNo);
-
-//  if (checkCar) {
-//    // if (data.id !== 'Nil') {
-//    //   UpdateHelpAPI({
-//    //     id: data.id,
-//    //     featureImage: data.featureImage,
-//    //     title,
-//    //     purpose: data.purpose,
-//    //     helpType: '',
-//    //     cityid: data.cityid,
-//    //     areaid: data.areaid,
-//    //     carNo: data.carNo,
-//    //     shasNo: data.shasNo,
-//    //     address: data.address,
-//    //     description: data.description,
-//    //     latitude: data.latitude,
-//    //     longitude: data.longitude,
-//    //     isFeatured: data.isFeatured,
-//    //     youCanPay: data.youCanPay,
-//    //     accompanyingName: data.accompanyingName,
-//    //     accompanyingMobile,
-//    //     helpStatus: data.helpStatus,
-//    //     favoriteList: data.favoriteList,
-//    //     mobile: data.mobile,
-//    //     status: data.status,
-//    //     createdName: data.createdName,
-//    //     createdBy: data.createdBy,
-//    //     createdAt: data.createdAt,
-//    //   });
-//    // }
-//    // reset();
-//    // AfterAddOrEdit();
-//    // reset();
-//    // if (isMountedRef.current) {
-//    //   setError('afterSubmit', { ...[], message: ' error.message' });
-//    // }
-//    // await new Promise((resolve) => setTimeout(resolve, 500));
-//    enqueueSnackbar('المركبة مضافة من قبل');
-//  } else {
-//    await AddHelpAPI({
-//      id: data.id,
-//      featureImage: data.featureImage,
-//      title,
-//      purpose: data.purpose,
-//      helpType: data.helpType,
-//      cityid: data.cityid,
-//      areaid: data.areaid,
-//      carNo: `${data.carNo}`,
-//      shasNo: data.shasNo,
-//      address: data.address,
-//      description: data.description,
-//      latitude: data.latitude,
-//      longitude: data.longitude,
-//      isFeatured: data.isFeatured,
-//      youCanPay: data.youCanPay,
-//      accompanyingName: data.accompanyingName,
-//      accompanyingMobile,
-//      helpStatus: data.helpStatus,
-//      favoriteList: data.favoriteList,
-//      mobile: accompanyingMobile,
-//      status: data.status,
-//      createdName: data.createdName,
-//      createdBy: data.createdBy,
-//      createdAt: new Date().getTime(),
-//    });
-//    reset();
-//    AfterAddOrEdit();
-//    await new Promise((resolve) => setTimeout(resolve, 500));
-//    enqueueSnackbar('تمت الاضافة بنجاح');
-//  }
+export { NewsForm };

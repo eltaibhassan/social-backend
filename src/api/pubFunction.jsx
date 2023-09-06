@@ -18,17 +18,17 @@ const myUploadFile = async (file, foldor) => {
 
 const shareToSocialMedia = async (title, photo, telphone) => {
   try {
-    const messageItem = `شارك في البحث بانك تعمل شير - ${title}
-    Tel: ${telphone}
-    Google Play: https://shorturl.at/ouLQW
-    Apple Store: https://shorturl.at/botX8
-    #مفقود
-    #لا_للحرب`;
-    if (photo === 'Nil') {
-      facebookText({ post: messageItem });
-    } else {
-      facebookMedia({ post: messageItem, mediaUrl: photo });
-    }
+    // const messageItem = `شارك في البحث بانك تعمل شير - ${title}
+    // Tel: ${telphone}
+    // Google Play: https://shorturl.at/ouLQW
+    // Apple Store: https://shorturl.at/botX8
+    // #مفقود
+    // #لا_للحرب`;
+    // if (photo === 'Nil') {
+    //   facebookText({ post: messageItem });
+    // } else {
+    //   facebookMedia({ post: messageItem, mediaUrl: photo });
+    // }
   } catch (error) {
     console.log(`MyError: ${error}`);
   }

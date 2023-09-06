@@ -9,15 +9,9 @@
     "email_address": "البريد الالكتروني",
     "password": "كلمة المرور"
   },
-  "missing": {
-    "missing": "المفقودات",
-    "missingPerson": "المفقودين",
-    "missingSomething": "المفقودات"
-  },
   "events_page": {
     "events": "الفعاليات",
     "title": "العنوان",
-    "desc": "الوصف",
     "link": "اضافة رابط",
     "linkText": "اسم الرابط",
     "eventType": "نوع الفعالية",
@@ -27,47 +21,56 @@
     "whatsapp": "وتساب التواصل",
     "latitude": "latitude",
     "longitude": "longitude",
-    "countryCode": "البلد",
     "startDate": "تاريخ الفعالية",
-    "startTime": "زمن الفعالية",
-    "createdAt": "تاريخ الانشاء",
-    "status": "حالة النشر",
-    "image": "صورة العرض",
-    "Published": "منشور",
-    "Pending": "غير منشور"
+    "startTime": "زمن الفعالية"
   },
-
-  "helps_page": {
-    "helps": "المساعدات",
-    "needs": "طلبات المساعدة",
-    "available": "اعلانات الوفرة",
-    "featureImage": "صورة الحوجة",
-    "title": "الحالة",
-    "purpose": "الغرض",
+  "news_page": {
+    "news": "الأخبار",
+    "title": "العنوان",
+    "link": "اضافة رابط",
+    "newsDate": "التاريخ",
+    "newsCatId": "التصنيف"
+  },
+  "share": {
+    "countryCode": "البلد",
     "createdAt": "تاريخ الانشاء",
-    "need_call": "نداء مساعدة",
-    "missingSomething": "مفقودات",
-    "helpType": "نوع المساعدة",
-    "Published": "منشور",
-    "Pending": "غير منشور",
-    "cityid": "الولاية",
-    "areaid": "المحلية",
+    "image": "صورة العرض",
+    "desc": "الوصف"
+  },
+  "association_page": {
+    "associations": "الروابط المهنية",
+    "logo": "",
+    "name": "اسم الرابطة",
+    "website": "الموقع الالكتروني",
+    "facebook": "رابط فيسبوك",
+    "twitter": "رابط تويتر",
+    "youtube": "رابط يوتيوب",
+    "whatsapp": "وتساب",
+    "phone": "رقم الهاتف"
+  },
+  "products_page": {
+    "products": "المنتجات والخدمات",
+    "proName": "اسم المنتج",
+    "proCat": "تصنيف المنتج",
+    "arrProName": "",
+    "desc": "الوصف",
+    "featureImage": "صورة العرض",
+    "images": "",
+    "phone": "رقم الهاتف",
+    "whatsapp": "وتساب",
+    "unitBy": "قياس الوحدة",
+    "unitPrice": "السعر",
     "address": "العنوان",
-    "description": "الوصف",
-    "isFeatured": "مميزة",
-    "youCanPay": "هل تستطيع الدفع",
-    "accompanyingName": "اسم المرافق",
-    "accompanyingMobile": "موبايل المرافق",
-    "helpStatus": "حالة المساعدة",
-    "cars": "المركبات",
-    "carNo": "رقم العربية",
-    "shasNo": "رقم الشاسي",
-    "image": "صورة"
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "conmmentList": "",
+    "isFeatured": "",
+    "createdName": "",
+    "createdBy": ""
   },
   "advertise": {
     "advertise": "الاعلانات",
     "title": "العنوان",
-    "desc": "الوصف",
     "link": "رابط الاعلان",
     "comName": "اسم الشركة"
   },
@@ -86,7 +89,11 @@
     "edit": "تعديل",
     "delete": "مسح",
     "publish": "نشر",
-    "unPublish": "الغاء النشر"
+    "unPublish": "الغاء النشر",
+    "form": "اضافة/تعديل",
+    "status": "حالة النشر",
+    "Published": "منشور",
+    "Pending": "غير منشور"
   },
   "validation": {
     "name": "الاسم مطلوب"

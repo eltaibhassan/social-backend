@@ -41,8 +41,10 @@ export default function Router() {
       >
         <Route element={<Navigate to={PATH_AFTER_LOGIN} replace />} />
         <Route path="advertise" element={<Advertise />} />
-
         <Route path="events" element={<Events />} />
+        <Route path="news" element={<News />} />
+        <Route path="products" element={<Products />} />
+        <Route path="associations" element={<Associations />} />
 
         <Route path="setting">
           <Route path="users" element={<Register />} />
@@ -66,3 +68,6 @@ const Page404 = Loadable(lazy(() => import('../pages/Page404/Page404')));
 
 const Advertise = Loadable(lazy(() => import('../pages/advertise/advertise')));
 const Events = Loadable(lazy(() => import('../pages/events/events')));
+const News = Loadable(lazy(() => import('../pages/news/news')));
+const Associations = Loadable(lazy(() => import('../pages/associations/associations')));
+const Products = Loadable(lazy(() => import('../pages/products/products')));

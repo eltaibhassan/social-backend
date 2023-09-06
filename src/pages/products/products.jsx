@@ -11,52 +11,59 @@ import {
   Stack,
   Card,
 } from '@mui/material';
+import { useSnackbar } from 'notistack';
 import { format } from 'timeago.js';
 import { Page } from '../../components/Page';
 import useLocales from '../../hooks/useLocales';
 import { Scrollbar } from '../../components/Scrollbar';
-import { getHelpsAPI, UpdateHelpAPI, DeleteHelpAPI } from '../../api/helpsAPI';
-import { HELPS_FETCHING, HELPS_SUCCESS, HELPS_FAILED } from '../../context/type';
-import { useHelpState, useHelpDispatch } from '../../context/helpsContext';
+import { getProductsAPI, UpdateProductAPI, DeleteProductAPI } from '../../api';
+import { PRODUCTS_FETCHING, PRODUCTS_SUCCESS, PRODUCTS_FAILED } from '../../context/type';
+import { useProductsState, useProductsDispatch } from '../../context';
 import { MyButton } from '../../components/controls';
 import { MySnackbar, ConfirmDialog, Popup, useTable, PublishMenu, MyProgress, Iconify } from '../../components/share';
-import { HelpForm } from './needsForm';
+import { PublishStatusSelector } from '../share/publishStatusSelector';
+import { ProductsForm } from './productsForm';
+import Image from '../../components/Image';
 import { shareToSocialMedia } from '../../api/pubFunction';
 
-const HelpsPage = () => {
+const ProductsPage = () => {
   const { translate } = useLocales();
-  const helpDispatch = useHelpDispatch();
-  const helpState = useHelpState();
+  const productsDispatch = useProductsDispatch();
+  const productsState = useProductsState();
+  const { enqueueSnackbar } = useSnackbar();
+  // const nav = useNavigate();
+
   const [recordForEdit, setRecordForEdit] = useState(null);
   const [filterFn, setFilterFn] = useState({ fn: (items) => items });
   const [openPopup, setOpenPopup] = useState(false);
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: 'success' });
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' });
   const [fetchDB, setFetchDB] = useState(null);
-  const locPurpose = '1zUjE75l9nUhMFTcfDBK';
+  const [publishState, setPublishState] = useState('');
 
   const headCells = [
-    { id: 'accompanyingMobile', label: translate('helps_page.title') },
-    { id: 'createdAt', label: translate('helps_page.createdAt') },
-    { id: 'helpStatus', label: translate('helps_page.helpStatus') },
+    { id: 'image', label: translate('share.image') },
+    { id: 'proName', label: translate('products_page.proName') },
+    { id: 'createdAt', label: translate('share.createdAt') },
+    { id: 'status', label: translate('control.status') },
     { id: 'actions', label: translate('control.action'), disableSorting: true },
   ];
 
   useEffect(() => {
     const FetchData = async () => {
       try {
-        helpDispatch({ type: HELPS_FETCHING });
-        const result = await getHelpsAPI(locPurpose);
-        helpDispatch({ type: HELPS_SUCCESS, payload: result });
+        productsDispatch({ type: PRODUCTS_FETCHING });
+        const result = await getProductsAPI();
+        productsDispatch({ type: PRODUCTS_SUCCESS, payload: result });
       } catch (e) {
-        helpDispatch({ type: HELPS_FAILED });
+        productsDispatch({ type: PRODUCTS_FAILED });
       }
     };
     FetchData();
-  }, [helpDispatch, fetchDB]);
+  }, [productsDispatch, fetchDB]);
 
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } = useTable(
-    helpState.loading ? [] : helpState.helps,
+    productsState.loading ? [] : productsState.products,
     headCells,
     filterFn
   );
@@ -69,10 +76,18 @@ const HelpsPage = () => {
         return items.filter(
           (x) =>
             x.name.toLowerCase().includes(value) ||
-            x.mobile.toLowerCase().includes(value) ||
-            x.qId.toLowerCase().includes(value)
+            x.location.toLowerCase().includes(value) ||
+            x.hostedBy.toLowerCase().includes(value) ||
+            x.phone.toLowerCase().includes(value)
         );
       },
+    });
+  };
+
+  const onSelectPublishState = (value) => {
+    setPublishState(value);
+    setFilterFn({
+      fn: (items) => items.filter((x) => x.status === value),
     });
   };
 
@@ -86,76 +101,65 @@ const HelpsPage = () => {
     setRecordForEdit(item);
     setOpenPopup(true);
   };
-  // arrTitle;
-  // carNoLetter;
-  // ccPhoneNo;
+
   const onPublish = async (item) => {
     const newItem = {
-      id: item.id,
+      proCat: item.featureImage,
+      proName: item.featureImage,
+      arrProName: item.featureImage,
+      desc: item.featureImage,
       featureImage: item.featureImage,
-      title: item.title,
-      arrTitle: item.arrTitle,
-      purpose: item.purpose,
-      helpType: item.helpType,
-      cityid: item.cityid,
-      areaid: item.areaid,
-      carNo: item.carNo,
-      carNoLetter: item.carNoLetter,
-      shasNo: item.shasNo,
-      address: item.address,
-      description: item.description,
-      latitude: item.latitude,
-      longitude: item.longitude,
-      isFeatured: item.isFeatured,
-      youCanPay: item.youCanPay,
-      accompanyingName: item.accompanyingName,
-      accompanyingMobile: item.accompanyingMobile,
-      ccPhoneNo: item?.ccPhoneNo ?? '',
-      createdAt: item.createdAt,
-      helpStatus: 'Published',
-      favoriteList: item.favoriteList,
-      mobile: item.mobile,
-      status: item.status,
-      createdName: item.createdName,
-      createdBy: item.createdBy,
+      images: item.featureImage,
+      whatsapp: item.featureImage,
+      phone: item.featureImage,
+      unitBy: item.featureImage,
+      unitPrice: item.featureImage,
+      address: item.featureImage,
+      latitude: item.featureImage,
+      longitude: item.featureImage,
+      conmmentList: item.featureImage,
+      isFeatured: item.featureImage,
+      createdName: item.featureImage,
+      createdBy: item.featureImage,
+      createdAt: item.featureImage,
+      status: 'Published',
+      countryCode: item.featureImage,
     };
-    await UpdateHelpAPI(newItem);
-    await shareToSocialMedia(item.title, item.featureImage, item.accompanyingMobile);
-
+    await UpdateProductAPI(item.id, newItem);
     setFetchDB(`edit${Math.random()}`);
+    await shareToSocialMedia(item.title, item.featureImage, item.accompanyingMobile);
+    // reset();
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    enqueueSnackbar('تم النشر بنجاح');
   };
   const onUnPublish = async (item) => {
     const newItem = {
-      id: item.id,
+      proCat: item.featureImage,
+      proName: item.featureImage,
+      arrProName: item.featureImage,
+      desc: item.featureImage,
       featureImage: item.featureImage,
-      title: item.title,
-      arrTitle: item.arrTitle,
-      purpose: item.purpose,
-      helpType: item.helpType,
-      cityid: item.cityid,
-      areaid: item.areaid,
-      carNo: item.carNo,
-      carNoLetter: item.carNoLetter,
-      shasNo: item.shasNo,
-      address: item.address,
-      description: item.description,
-      latitude: item.latitude,
-      longitude: item.longitude,
-      isFeatured: item.isFeatured,
-      youCanPay: item.youCanPay,
-      accompanyingName: item.accompanyingName,
-      accompanyingMobile: item.accompanyingMobile,
-      ccPhoneNo: item.ccPhoneNo,
-      createdAt: item.createdAt,
-      helpStatus: 'Pending',
-      favoriteList: item.favoriteList,
-      mobile: item.mobile,
-      status: item.status,
-      createdName: item.createdName,
-      createdBy: item.createdBy,
+      images: item.featureImage,
+      whatsapp: item.featureImage,
+      phone: item.featureImage,
+      unitBy: item.featureImage,
+      unitPrice: item.featureImage,
+      address: item.featureImage,
+      latitude: item.featureImage,
+      longitude: item.featureImage,
+      conmmentList: item.featureImage,
+      isFeatured: item.featureImage,
+      createdName: item.featureImage,
+      createdBy: item.featureImage,
+      createdAt: item.featureImage,
+      status: 'Pending',
+      countryCode: item.featureImage,
     };
-    await UpdateHelpAPI(newItem);
+    await UpdateProductAPI(item.id, newItem);
     setFetchDB(`edit${Math.random()}`);
+    // reset();
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    enqueueSnackbar('تم الغاء النشر بنجاح');
   };
 
   const onDelete = async (id) => {
@@ -163,7 +167,11 @@ const HelpsPage = () => {
       ...confirmDialog,
       isOpen: false,
     });
-    DeleteHelpAPI(id);
+    console.log('-----------delete--------------');
+    console.log(id);
+    console.log('-------------------------------');
+
+    DeleteProductAPI(id);
     setFetchDB(`deleted${Math.random()}`);
     setNotify({
       isOpen: true,
@@ -177,7 +185,7 @@ const HelpsPage = () => {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1}>
           <Typography variant="h4" gutterBottom>
-            {translate('helps_page.helps')}
+            {translate('products_page.products')}
           </Typography>
         </Stack>
 
@@ -185,8 +193,9 @@ const HelpsPage = () => {
           <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }} sx={{ py: 2.5, px: 3 }}>
             <TextField
               fullWidth
+              // size="small"
               onChange={handleSearch}
-              placeholder={`${translate('control.search')} ${translate('helps_page.helps')}`}
+              placeholder={`${translate('control.search')} ${translate('products_page.products')}`}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -195,6 +204,14 @@ const HelpsPage = () => {
                 ),
               }}
             />
+            <PublishStatusSelector onSelectPublishState={onSelectPublishState} selectedValue={publishState} />
+            {/* <RHFSelect name="purpose" label={translate('products_page.purpose')} sx={{ mb: 1 }}>
+              {pubStatus.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </RHFSelect> */}
             <MyButton
               text={translate('control.addnew')}
               variant="outlined"
@@ -210,7 +227,7 @@ const HelpsPage = () => {
               }}
             />
           </Stack>
-          {helpState.loading ? (
+          {productsState.loading ? (
             <MyProgress />
           ) : (
             <Scrollbar>
@@ -219,10 +236,17 @@ const HelpsPage = () => {
                 <TableBody>
                   {recordsAfterPagingAndSorting().map((item) => (
                     <TableRow key={item.id}>
-                      <TableCell>{item.title}</TableCell>
-                      {/* <TableCell>{translate(`helps_page.${item.purpose}`)}</TableCell> */}
-                      <TableCell>{translate(format(item.createdAt, 'ar.ts'))}</TableCell>
-                      <TableCell>{translate(`helps_page.${item.helpStatus}`)}</TableCell>
+                      <TableCell>
+                        <Image
+                          alt="City Image"
+                          src={item.featureImage}
+                          sx={{ width: 100, height: 100, borderRadius: 1 }}
+                        />
+                      </TableCell>
+                      <TableCell>{item.proName}</TableCell>
+                      <TableCell>{format(item.createdAt, 'ar')}</TableCell>
+                      <TableCell>{translate(`control.${item.status}`)}</TableCell>
+                      {/* <TableCell>{moment('20111031', 'YYYYMMDD').fromNow()}</TableCell> */}
                       <TableCell>
                         <PublishMenu
                           onPublish={() => {
@@ -253,8 +277,12 @@ const HelpsPage = () => {
               <TblPagination />
             </Scrollbar>
           )}
-          <Popup title={`${translate('form')} ${translate('helps')}`} openPopup={openPopup} setOpenPopup={setOpenPopup}>
-            <HelpForm recordForEdit={recordForEdit} AfterAddOrEdit={AfterAddOrEdit} />
+          <Popup
+            title={`${translate('control.form')} ${translate('products_page.products')}`}
+            openPopup={openPopup}
+            setOpenPopup={setOpenPopup}
+          >
+            <ProductsForm recordForEdit={recordForEdit} AfterAddOrEdit={AfterAddOrEdit} />
           </Popup>
           <MySnackbar notify={notify} setNotify={setNotify} />
           <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
@@ -263,4 +291,4 @@ const HelpsPage = () => {
     </Page>
   );
 };
-export default HelpsPage;
+export default ProductsPage;

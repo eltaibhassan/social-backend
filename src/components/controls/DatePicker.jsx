@@ -31,11 +31,9 @@ const MyDatePicker = (props) => {
           <TextField
             size="small"
             {...params}
-            sx={
-              {
-                // width: '100%',
-              }
-            }
+            sx={{
+              pb: 1,
+            }}
           />
         )}
       />

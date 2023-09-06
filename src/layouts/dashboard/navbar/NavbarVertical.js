@@ -73,6 +73,21 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
           path: '/dashboard/events',
           icon: getIcon('emojione-monotone:newspaper'),
         },
+        {
+          title: translate('news_page.news'),
+          path: '/dashboard/news',
+          icon: getIcon('emojione-monotone:newspaper'),
+        },
+        {
+          title: translate('association_page.associations'),
+          path: '/dashboard/associations',
+          icon: getIcon('emojione-monotone:newspaper'),
+        },
+        {
+          title: translate('products_page.products'),
+          path: '/dashboard/products',
+          icon: getIcon('emojione-monotone:newspaper'),
+        },
       ],
     },
     {
