@@ -45,6 +45,7 @@ export default function Router() {
         <Route path="events" element={<Events />} />
 
         <Route path="setting">
+          <Route path="users" element={<Register />} />
           <Route path="register" element={<Register />} />
         </Route>
       </Route>

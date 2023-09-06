@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -7,69 +7,92 @@ import { LoadingButton } from '@mui/lab';
 import { useSnackbar } from 'notistack';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import { useAuth } from '../../hooks/useAuth';
 import useLocales from '../../hooks/useLocales';
 import useIsMountedRef from '../../hooks/useIsMountedRef';
-import { FormProvider, RHFTextField, RHFUploadAvatar, RHFSelect } from '../../components/hook-form';
-import { InsertEventAPI, UpdateEventAPI } from '../../api';
+import { FormProvider, RHFTextField, RHFUploadAvatar } from '../../components/hook-form';
+import { InsertEventAPI, UpdateEventAPI, myUploadFile } from '../../api';
+import { MyDatePicker, MyTimePicker } from '../../components/controls';
+// import {  } from '../../api';
 
-const EventsForm = ({ recordForEdit }) => {
+const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
+  const { user } = useAuth();
   const { translate } = useLocales();
   const { enqueueSnackbar } = useSnackbar();
   const isMountedRef = useIsMountedRef();
   const [phoneKey, setPhoneKey] = useState('+249');
-  const locPurpose = 'sVfnoGyFShDF0o4HrHTt';
+  const [whatsappKey, setWhatsappKey] = useState('+249');
+  const [startDate, setStartDate] = useState(Date.now());
+  const [startTime, setStartTime] = useState(Date.now());
+
+  // id,
+  // featureImage,
+  // title,
+  // arrTitle,
+  // desc,
+  // link,
+  // linkText,
+  // eventType,
+  // location,
+  // hostedBy,
+  // phone,
+  // whatsapp,
+  // startDate,
+  // startTime,
+  // latitude,
+  // longitude,
+  // createdAt,
+  // createdName,
+  // createdBy,
+  // status,
+  // countryCode,
 
   const ItemSchema = Yup.object().shape({
+    // id
     featureImage: Yup.mixed(),
-    title: Yup.string(),
-    purpose: Yup.string(),
-    helpType: Yup.string(),
-    cityid: Yup.string(),
-    areaid: Yup.string(),
-    carNo: Yup.string().required('ادخل رقم مركبة صحيح'),
-    shasNo: Yup.string(),
-    address: Yup.string(),
-    description: Yup.string(),
+    title: Yup.string().required(`${translate('events_page.title')} حقل مطلوب`),
+    // arrTitle
+    desc: Yup.string().required(`${translate('events_page.desc')} حقل مطلوب`),
+    link: Yup.string(),
+    linkText: Yup.string(),
+    eventType: Yup.string().required(`${translate('events_page.eventType')} حقل مطلوب`),
+    location: Yup.string().required(`${translate('events_page.location')} حقل مطلوب`),
+    hostedBy: Yup.string().required(`${translate('events_page.hostedBy')} حقل مطلوب`),
+    phone: Yup.string(),
+    whatsapp: Yup.string(),
+    startDate: Yup.number().required(`${translate('events_page.startDate')} حقل مطلوب`),
+    startTime: Yup.number().required(`${translate('events_page.startTime')} حقل مطلوب`),
     latitude: Yup.number(),
     longitude: Yup.number(),
-    isFeatured: Yup.bool(),
-    youCanPay: Yup.bool(),
-    accompanyingName: Yup.string(),
-    accompanyingMobile: Yup.string().required(translate('plase_insert_mobile_no')),
     createdAt: Yup.number(),
-    createdBy: Yup.string(),
-    favoriteList: Yup.array(),
-    mobile: Yup.string(),
     createdName: Yup.string(),
-    status: Yup.string(),
-    helpStatus: Yup.string(),
+    createdBy: Yup.string(),
+    // status: Yup.string(),
+    countryCode: Yup.string(),
   });
 
   const defaultValues = {
-    id: recordForEdit?.id || 'Nil',
-    featureImage: recordForEdit?.featureImage || 'Nil',
+    // id: recordForEdit?.id || '',
+    featureImage: recordForEdit?.featureImage || '',
     title: recordForEdit?.title || '',
-    purpose: locPurpose,
-    helpType: recordForEdit?.helpType || 'Nil',
-    cityid: recordForEdit?.cityid || 'Nil',
-    areaid: recordForEdit?.areaid || 'Nil',
-    carNo: recordForEdit?.carNo || 0,
-    shasNo: recordForEdit?.shasNo || '',
-    address: recordForEdit?.address || '',
-    description: recordForEdit?.description || '',
-    latitude: 1.1,
-    longitude: 1.1,
-    isFeatured: true,
-    youCanPay: true,
-    accompanyingName: recordForEdit?.accompanyingName || '',
-    accompanyingMobile: recordForEdit?.accompanyingMobile || '',
+    arrTitle: recordForEdit?.arrTitle || '',
+    desc: recordForEdit?.desc || '',
+    link: recordForEdit?.link || '',
+    linkText: recordForEdit?.linkText || '',
+    eventType: recordForEdit?.eventType || '',
+    location: recordForEdit?.location || '',
+    hostedBy: recordForEdit?.hostedBy || '',
+    phone: recordForEdit?.phone || '',
+    whatsapp: recordForEdit?.whatsapp || '',
+    startDate: recordForEdit?.startDate || new Date().getTime(),
+    startTime: recordForEdit?.startTime || new Date().getTime(),
+    latitude: recordForEdit?.latitude || 1.1,
+    longitude: recordForEdit?.longitude || 1.1,
     createdAt: recordForEdit?.createdAt || new Date().getTime(),
-    createdBy: recordForEdit?.createdBy || '',
-    favoriteList: recordForEdit?.favoriteList || [],
-    mobile: recordForEdit?.mobile || 0,
-    createdName: recordForEdit?.createdName || '',
-    status: recordForEdit?.status || 'Requesting',
-    helpStatus: recordForEdit?.helpStatus || 'Pending',
+    createdName: recordForEdit?.createdName || user.personName,
+    createdBy: recordForEdit?.createdBy || user.uid,
+    status: recordForEdit?.status || 'Pending',
+    countryCode: recordForEdit?.countryCode || '',
   };
 
   const methods = useForm({
@@ -87,56 +110,49 @@ const EventsForm = ({ recordForEdit }) => {
 
   const onSubmit = async (data) => {
     try {
-      let accompanyingMobile = `${phoneKey}${data.accompanyingMobile}`;
-      const firstChar = data.accompanyingMobile.substring(0, 1);
-      if (data.accompanyingMobile.length === 10 && firstChar === '0') {
-        accompanyingMobile = `${phoneKey}${data.accompanyingMobile.substring(1)}`;
-      }
-
-      let initTitle = '';
-      if (recordForEdit === null) {
-        initTitle = `تم سرقم سيارة ${data.description} من ${data.address} بالرقم ${data.carNo} 
-       Tel:${accompanyingMobile}`;
+      let imageUrl = 'Nil';
+      if (data.featureImage.type === undefined) {
+        imageUrl = data.featureImage;
       } else {
-        initTitle = data.title;
+        imageUrl = await myUploadFile(data.featureImage, 'pubicImg');
       }
 
       const newItme = {
-        id: data.id,
-        featureImage: data.featureImage,
-        title: initTitle,
-        arrTitle: initTitle.split(' '),
-        purpose: data.purpose,
-        helpType: data.helpType,
-        cityid: data.cityid,
-        areaid: data.areaid,
-        carNo: `${data.carNo}`,
-        carNoLetter: data.carNoLetter,
-        shasNo: data.shasNo,
-        address: data.address,
-        description: data.description,
+        // id: data.id,
+        featureImage: imageUrl,
+        title: data.title,
+        arrTitle: data.title.split(' '),
+        desc: data.desc,
+        link: data.link,
+        linkText: data.linkText,
+        eventType: data.eventType,
+        location: data.location,
+        hostedBy: data.hostedBy,
+        phone: `${phoneKey}${data.phone}`,
+        whatsapp: `${whatsappKey}${data.whatsapp}`,
+        startDate: data.startDate,
+        startTime: data.startTime,
         latitude: data.latitude,
         longitude: data.longitude,
-        isFeatured: data.isFeatured,
-        youCanPay: data.youCanPay,
-        accompanyingName: data.accompanyingName,
-        accompanyingMobile,
-        ccPhoneNo: phoneKey,
-        createdAt: new Date().getTime(),
-        createdBy: data.createdBy,
-        favoriteList: data.favoriteList,
-        mobile: accompanyingMobile,
+        createdAt: data.createdAt,
         createdName: data.createdName,
+        createdBy: data.createdBy,
         status: data.status,
-        helpStatus: data.helpStatus,
+        countryCode: data.countryCode,
       };
       if (recordForEdit === null) {
+        console.log('------------------------------');
+        console.log('will insert');
+        console.log(startTime);
+
         InsertEventAPI(newItme);
       } else {
-        UpdateEventAPI(newItme);
+        console.log('------------------------------');
+        console.log('will update');
+        UpdateEventAPI(data.id, newItme);
       }
       reset();
-      // AfterAddOrEdit();
+      AfterAddOrEdit();
       await new Promise((resolve) => setTimeout(resolve, 500));
       enqueueSnackbar(recordForEdit === null ? 'Create success!' : 'Update success!');
     } catch (error) {
@@ -177,56 +193,42 @@ const EventsForm = ({ recordForEdit }) => {
             }}
           >
             {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
-            {/* <RHFSelect name="purpose" label={translate('helps_page.purpose')} sx={{ mb: 1 }}>
-              {purposeState.purposes.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.arName}
-                </option>
-              ))}
-            </RHFSelect> */}
-            {/* <RHFSelect name="helpType" label={translate('helps_page.helpType')} sx={{ mb: 1 }}>
-              {helpTypeState.helpTypes.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.arName}
-                </option>
-              ))}
-            </RHFSelect> */}
-            {/* <RHFTextField name="needName" size="small" label="اسم الدواء او التخصص او الجهاز" sx={{ pb: 1 }} /> */}
-            {/* <RHFSelect name="areaid" label={translate('helps_page.areaid')} sx={{ mb: 1 }}>
-              {localityState.localities.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.arName}
-                </option>
-              ))}
-            </RHFSelect> */}
-            {/* <Box
+            <RHFTextField name="title" size="small" label={translate('events_page.title')} sx={{ pb: 1 }} />
+            <RHFTextField name="desc" size="small" label={translate('events_page.desc')} sx={{ pb: 1 }} />
+            <RHFTextField name="link" size="small" label={translate('events_page.link')} sx={{ pb: 1 }} />
+            <RHFTextField name="linkText" size="small" label={translate('events_page.linkText')} sx={{ pb: 1 }} />
+            <RHFTextField name="eventType" size="small" label={translate('events_page.eventType')} sx={{ pb: 1 }} />
+            <RHFTextField name="location" size="small" label={translate('events_page.location')} sx={{ pb: 1 }} />
+            <RHFTextField name="hostedBy" size="small" label={translate('events_page.hostedBy')} sx={{ pb: 1 }} />
+            <Box
               sx={{
                 display: 'grid',
                 columnGap: 3,
                 rowGap: 0,
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
-                // pb: 1,
+                pb: 1,
               }}
             >
-              <RHFSelect name="carNoLetter" label={translate('helps_page.carNoLetter')} sx={{ mb: 1 }}>
-                {carLetterState.carLetters.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.name}
-                  </option>
-                ))}
-              </RHFSelect>
-              <RHFTextField name="carNo" size="small" label={translate('helps_page.carNo')} sx={{ pb: 1 }} />{' '}
-            </Box> */}
+              <MyDatePicker
+                label={translate('events_page.startDate')}
+                name="startDate"
+                size="small"
+                value={startDate}
+                onChange={(value) => {
+                  setStartDate(value.target.value);
+                }}
+              />
+              <MyTimePicker
+                label={translate('events_page.startTime')}
+                name="startTime"
+                size="small"
+                value={startTime}
+                onChange={(value) => {
+                  setStartTime(value.target.value);
+                }}
+              />
+            </Box>
 
-            <RHFTextField name="shasNo" size="small" label={translate('helps_page.shasNo')} sx={{ pb: 1 }} />
-            <RHFTextField name="description" size="small" label={translate('helps_page.description')} sx={{ pb: 1 }} />
-            <RHFTextField name="address" size="small" label={translate('helps_page.address')} sx={{ pb: 1 }} />
-            <RHFTextField
-              name="accompanyingName"
-              size="small"
-              label={translate('helps_page.accompanyingName')}
-              sx={{ pb: 1 }}
-            />
             <Box
               sx={{
                 display: 'grid',
@@ -236,12 +238,7 @@ const EventsForm = ({ recordForEdit }) => {
                 // pb: 1,
               }}
             >
-              <RHFTextField
-                name="accompanyingMobile"
-                size="small"
-                label={translate('helps_page.accompanyingMobile')}
-                sx={{ pb: 1 }}
-              />
+              <RHFTextField name="phone" size="small" label={translate('events_page.phone')} sx={{ pb: 1 }} />
               <PhoneInput
                 sx={{ width: 20, height: 20, color: 'green', mr: 1 }}
                 onlyCountries={['sd', 'sa', 'ae', 'qa', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
@@ -251,6 +248,28 @@ const EventsForm = ({ recordForEdit }) => {
                 onChange={(code) => setPhoneKey(code)}
               />
             </Box>
+            <Box
+              sx={{
+                display: 'grid',
+                columnGap: 3,
+                rowGap: 0,
+                gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
+                // pb: 1,
+              }}
+            >
+              <RHFTextField name="whatsapp" size="small" label={translate('events_page.whatsapp')} sx={{ pb: 1 }} />
+              <PhoneInput
+                sx={{ width: 20, height: 20, color: 'green', mr: 1 }}
+                onlyCountries={['sd', 'sa', 'ae', 'qa', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
+                country={'sd'}
+                enableSearch="true"
+                value={phoneKey}
+                onChange={(code) => setWhatsappKey(code)}
+              />
+            </Box>
+            <RHFTextField name="latitude" size="small" label={translate('events_page.latitude')} sx={{ pb: 1 }} />
+            <RHFTextField name="longitude" size="small" label={translate('events_page.longitude')} sx={{ pb: 1 }} />
+            <RHFTextField name="countryCode" size="small" label={translate('events_page.countryCode')} sx={{ pb: 1 }} />
           </Box>
 
           <Box sx={{ mb: 5 }}>
@@ -284,20 +303,6 @@ const EventsForm = ({ recordForEdit }) => {
           </Stack>
         </Card>
       </Grid>
-      {/* <LocalitySelector
-              onSelectLocality={onSelectLocality}
-              selectedValue={selectedLocality}
-              stateId={selectedState}
-            /> */}
-      {/* <RHFSelect name="cityid" label={translate('helps_page.cityid')}>
-              {stateState.states.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.arName}
-                </option>
-              ))}
-            </RHFSelect> */}
-      {/* <PurposeSelector onSelectPurpose={handlePurposeChange} selectedValue={selectedPurpose} /> */}
-      {/* <CarLetterSelector onSelectCarLetter={onSelectCarLetter} selectedValue={selectedCarLetter} /> */}
     </FormProvider>
   );
 };

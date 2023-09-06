@@ -27,9 +27,9 @@ const InsertAssociationAPI = async (association) => {
   }
 };
 
-const UpdateAssociationAPI = async (association) => {
+const UpdateAssociationAPI = async (id, association) => {
   try {
-    const associationsRef = doc(collection(DB, 'associations'), association.id);
+    const associationsRef = doc(collection(DB, 'associations'), id);
     await setDoc(associationsRef, association);
   } catch (error) {
     return null;

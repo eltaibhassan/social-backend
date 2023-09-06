@@ -1,28 +1,25 @@
 import React from 'react';
-import moment from 'moment';
-import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { TimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { TextField } from '@mui/material';
 
-const MyDatePicker = (props) => {
+const MyTimePicker = (props) => {
   const { name, label, value, onChange, ...other } = props;
 
   function convertToDefEventPara(name, value) {
-    const momDate = moment(new Date(value)).format('YYYY-MM-DD');
-    const unixDate = new Date(momDate).getTime();
     return {
       target: {
         name,
-        value: unixDate,
+        value,
       },
     };
   }
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
-      <DesktopDatePicker
+      <TimePicker
         label={label}
-        inputFormat="DD/MM/YYYY"
+        size="small"
         name={name}
         value={value}
         onChange={(date) => onChange(convertToDefEventPara(name, date))}
@@ -42,4 +39,4 @@ const MyDatePicker = (props) => {
     </LocalizationProvider>
   );
 };
-export { MyDatePicker };
+export { MyTimePicker };

@@ -19,18 +19,16 @@ const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
-    arName: Yup.string().required('First name required'),
-    enName: Yup.string().required('enName name required'),
+    personName: Yup.string().required('First name required'),
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required'),
-    userType: Yup.string().required('Last name required'),
+    userType: Yup.string(),
   });
 
   const defaultValues = {
-    arName: '',
-    enName: '',
-    email: 'example@gmail.com',
-    password: '********',
+    personName: '',
+    email: '',
+    password: '',
     userType: 'Editor',
   };
 
@@ -48,7 +46,7 @@ const RegisterForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      await register(data.email, data.password, data.arName, data.enName, data.userType);
+      await register(data.email, data.password, data.personName, data.userType);
     } catch (error) {
       console.error(error);
       reset();
@@ -64,20 +62,20 @@ const RegisterForm = () => {
         {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
 
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <RHFTextField name="arName" label={translate('field.full_arabic_name')} />
+          <RHFTextField name="personName" label={translate('users.personName')} />
         </Stack>
 
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <RHFTextField name="enName" label={translate('field.full_arabic_name')} />
-        </Stack>
+        {/* <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+          <RHFTextField name="enName" label={translate('users.personName')} />
+        </Stack> */}
 
         {/* <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
           <RHFTextField name="userType" label="User Role" />
         </Stack> */}
-        <RHFTextField name="email" label={translate('field.email_address')} />
+        <RHFTextField name="email" label={translate('users.email')} />
         <RHFTextField
           name="password"
-          label={translate('field.password')}
+          label={translate('users.password')}
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (

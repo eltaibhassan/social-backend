@@ -21,17 +21,19 @@ const getNewsCatsAPI = async () => {
 const InsertNewsCatsAPI = async (nCat) => {
   try {
     const newsCatsRef = collection(DB, 'newsCats');
-    await addDoc(newsCatsRef, nCat);
+    return addDoc(newsCatsRef, nCat);
   } catch (error) {
+    console.log(error);
     return null;
   }
 };
 
-const UpdateNewsCatsAPI = async (nCat) => {
+const UpdateNewsCatsAPI = async (id, nCat) => {
   try {
-    const newsCatsRef = doc(collection(DB, 'newsCats'), nCat.id);
-    await setDoc(newsCatsRef, nCat);
+    const newsCatsRef = doc(collection(DB, 'newsCats'), id);
+    return setDoc(newsCatsRef, nCat);
   } catch (error) {
+    console.log(error);
     return null;
   }
 };
@@ -39,8 +41,9 @@ const UpdateNewsCatsAPI = async (nCat) => {
 const DeleteNewsCatsAPI = async (id) => {
   try {
     const newsCatsRef = doc(collection(DB, 'newsCats'), id);
-    await deleteDoc(newsCatsRef);
+    return deleteDoc(newsCatsRef);
   } catch (error) {
+    console.log(error);
     return null;
   }
 };

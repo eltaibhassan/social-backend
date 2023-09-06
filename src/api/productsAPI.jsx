@@ -21,17 +21,19 @@ const getProductsAPI = async () => {
 const InsertProductAPI = async (product) => {
   try {
     const productsRef = collection(DB, 'products');
-    await addDoc(productsRef, product);
+    return addDoc(productsRef, product);
   } catch (error) {
+    console.log(error);
     return null;
   }
 };
 
-const UpdateProductAPI = async (product) => {
+const UpdateProductAPI = async (id, product) => {
   try {
-    const productsRef = doc(collection(DB, 'products'), product.id);
-    await setDoc(productsRef, product);
+    const productsRef = doc(collection(DB, 'products'), id);
+    return setDoc(productsRef, product);
   } catch (error) {
+    console.log(error);
     return null;
   }
 };
@@ -39,8 +41,9 @@ const UpdateProductAPI = async (product) => {
 const DeleteProductAPI = async (id) => {
   try {
     const productsRef = doc(collection(DB, 'products'), id);
-    await deleteDoc(productsRef);
+    return deleteDoc(productsRef);
   } catch (error) {
+    console.log(error);
     return null;
   }
 };

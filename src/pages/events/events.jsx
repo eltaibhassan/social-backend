@@ -28,8 +28,8 @@ import { shareToSocialMedia } from '../../api/pubFunction';
 
 const EventsPage = () => {
   const { translate } = useLocales();
-  const helpDispatch = useEventsDispatch();
-  const helpState = useEventsState();
+  const eventDispatch = useEventsDispatch();
+  const eventState = useEventsState();
   const { enqueueSnackbar } = useSnackbar();
   // const nav = useNavigate();
 
@@ -41,32 +41,29 @@ const EventsPage = () => {
   const [fetchDB, setFetchDB] = useState(null);
   // const [publishState, setPublishState] = useState('');
 
-  const locPurpose = 'sVfnoGyFShDF0o4HrHTt';
-
   const headCells = [
-    { id: 'image', label: translate('helps_page.image') },
-    { id: 'title', label: translate('helps_page.title') },
-    { id: 'carNo', label: translate('helps_page.carNo') },
-    { id: 'createdAt', label: translate('helps_page.createdAt') },
-    { id: 'helpStatus', label: translate('helps_page.helpStatus') },
+    { id: 'image', label: translate('events_page.image') },
+    { id: 'title', label: translate('events_page.title') },
+    { id: 'createdAt', label: translate('events_page.createdAt') },
+    { id: 'status', label: translate('events_page.status') },
     { id: 'actions', label: translate('control.action'), disableSorting: true },
   ];
 
   useEffect(() => {
     const FetchData = async () => {
       try {
-        helpDispatch({ type: EVENTS_FETCHING });
-        const result = await getEventsAPI(locPurpose);
-        helpDispatch({ type: EVENTS_SUCCESS, payload: result });
+        eventDispatch({ type: EVENTS_FETCHING });
+        const result = await getEventsAPI();
+        eventDispatch({ type: EVENTS_SUCCESS, payload: result });
       } catch (e) {
-        helpDispatch({ type: EVENTS_FAILED });
+        eventDispatch({ type: EVENTS_FAILED });
       }
     };
     FetchData();
-  }, [helpDispatch, fetchDB]);
+  }, [eventDispatch, fetchDB]);
 
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } = useTable(
-    helpState.loading ? [] : helpState.helps,
+    eventState.loading ? [] : eventState.events,
     headCells,
     filterFn
   );
@@ -84,11 +81,8 @@ const EventsPage = () => {
   };
 
   const onSelectPublishState = (value) => {
-    console.log('---------------------------');
-    console.log(value);
-    // setPublishState(value);
     setFilterFn({
-      fn: (items) => items.filter((x) => x.helpStatus === value),
+      fn: (items) => items.filter((x) => x.status === value),
     });
   };
 
@@ -107,31 +101,9 @@ const EventsPage = () => {
     const newItem = {
       id: item.id,
       featureImage: item.featureImage,
-      title: item.title,
-      arrTitle: item?.arrTitle ?? [],
-      purpose: item.purpose,
-      helpType: item.helpType,
-      cityid: item.cityid,
-      areaid: item.areaid,
-      carNo: item.carNo,
-      carNoLetter: item?.carNoLetter ?? '',
-      shasNo: item.shasNo,
-      address: item.address,
-      description: item.description,
-      latitude: item.latitude,
-      longitude: item.longitude,
-      isFeatured: item.isFeatured,
-      youCanPay: item.youCanPay,
-      accompanyingName: item.accompanyingName,
-      accompanyingMobile: item.accompanyingMobile,
-      ccPhoneNo: item?.ccPhoneNo ?? '',
-      createdAt: new Date().getTime(),
-      helpStatus: 'Published',
+
+      status: 'Published',
       favoriteList: item.favoriteList,
-      mobile: item.mobile,
-      status: item.status,
-      createdName: item.createdName,
-      createdBy: item.createdBy,
     };
     await UpdateEventAPI(newItem);
     await shareToSocialMedia(item.title, item.featureImage, item.accompanyingMobile);
@@ -144,30 +116,8 @@ const EventsPage = () => {
       id: item.id,
       featureImage: item.featureImage,
       title: item.title,
-      arrTitle: item.arrTitle,
-      purpose: item.purpose,
-      helpType: item.helpType,
-      cityid: item.cityid,
-      areaid: item.areaid,
-      carNo: item.carNo,
-      carNoLetter: item.carNoLetter,
-      shasNo: item.shasNo,
-      address: item.address,
-      description: item.description,
-      latitude: item.latitude,
-      longitude: item.longitude,
-      isFeatured: item.isFeatured,
-      youCanPay: item.youCanPay,
-      accompanyingName: item.accompanyingName,
-      accompanyingMobile: item.accompanyingMobile,
-      ccPhoneNo: item.ccPhoneNo,
-      createdAt: new Date().getTime(),
-      helpStatus: 'Pending',
+      status: 'Pending',
       favoriteList: item.favoriteList,
-      mobile: item.mobile,
-      status: item.status,
-      createdName: item.createdName,
-      createdBy: item.createdBy,
     };
     await UpdateEventAPI(newItem);
     // reset();
@@ -181,6 +131,10 @@ const EventsPage = () => {
       ...confirmDialog,
       isOpen: false,
     });
+    console.log('-----------delete--------------');
+    console.log(id);
+    console.log('-------------------------------');
+
     DeleteEventAPI(id);
     setFetchDB(`deleted${Math.random()}`);
     setNotify({
@@ -195,7 +149,7 @@ const EventsPage = () => {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1}>
           <Typography variant="h4" gutterBottom>
-            {translate('helps_page.helps')}
+            {translate('events_page.events')}
           </Typography>
         </Stack>
 
@@ -205,7 +159,7 @@ const EventsPage = () => {
               fullWidth
               // size="small"
               onChange={handleSearch}
-              placeholder={`${translate('control.search')} ${translate('helps_page.helps')}`}
+              placeholder={`${translate('control.search')} ${translate('events_page.events')}`}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -214,8 +168,8 @@ const EventsPage = () => {
                 ),
               }}
             />
-            <PublishStatusSelector onSelectPublishState={onSelectPublishState} />
-            {/* <RHFSelect name="purpose" label={translate('helps_page.purpose')} sx={{ mb: 1 }}>
+            <PublishStatusSelector onSelectPublishState={onSelectPublishState} selectedValue="" />
+            {/* <RHFSelect name="purpose" label={translate('events_page.purpose')} sx={{ mb: 1 }}>
               {pubStatus.map((option) => (
                 <option key={option} value={option}>
                   {option}
@@ -237,7 +191,7 @@ const EventsPage = () => {
               }}
             />
           </Stack>
-          {helpState.loading ? (
+          {eventState.loading ? (
             <MyProgress />
           ) : (
             <Scrollbar>
@@ -253,16 +207,10 @@ const EventsPage = () => {
                           sx={{ width: 100, height: 100, borderRadius: 1 }}
                         />
                       </TableCell>
-
                       <TableCell>{item.title}</TableCell>
-                      <TableCell>{item.carNo}</TableCell>
-                      <TableCell>
-                        {translate(format(item.createdAt, 'ar.ts'))}
-                        <br />
-                        <br />
-                        {item.createdAt}
-                      </TableCell>
-                      <TableCell>{translate(`helps_page.${item.helpStatus}`)}</TableCell>
+                      <TableCell>{format(item.createdAt, 'ar')}</TableCell>
+                      <TableCell>{translate(`events_page.${item.status}`)}</TableCell>
+                      {/* <TableCell>{moment('20111031', 'YYYYMMDD').fromNow()}</TableCell> */}
                       <TableCell>
                         <PublishMenu
                           onPublish={() => {
@@ -293,7 +241,11 @@ const EventsPage = () => {
               <TblPagination />
             </Scrollbar>
           )}
-          <Popup title={`${translate('form')} ${translate('helps')}`} openPopup={openPopup} setOpenPopup={setOpenPopup}>
+          <Popup
+            title={`${translate('form')} ${translate('events')}`}
+            openPopup={openPopup}
+            setOpenPopup={setOpenPopup}
+          >
             <EventsForm recordForEdit={recordForEdit} AfterAddOrEdit={AfterAddOrEdit} />
           </Popup>
           <MySnackbar notify={notify} setNotify={setNotify} />

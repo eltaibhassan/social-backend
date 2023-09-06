@@ -9,11 +9,13 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from 'firebase/auth';
-import { firebase } from '../config';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
+import { firebase } from '../config';
+import { UpdateUserAPI } from '../api';
 // const firebaseApp = initializeApp(firebase);
 const AUTH = getAuth(firebase);
-// const DB = getFirestore(firebase);
+const DB = getFirestore(firebase);
 
 const initialState = {
   isAuthenticated: false,
@@ -50,17 +52,22 @@ AuthProvider.propTypes = {
 function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const [profile] = useState(null);
+  // const [profile] = useState(null);
   const [creatingNewUser, setCreatingNewUser] = useState(false);
 
   useEffect(
     () =>
       onAuthStateChanged(AUTH, async (user) => {
         if (user) {
+          const userRef = doc(DB, 'users', user.uid);
+          const docSnap = await getDoc(userRef);
+
+          const profile = docSnap.data();
+
           if (!creatingNewUser) {
             dispatch({
               type: 'INITIALISE',
-              payload: { isAuthenticated: true, user },
+              payload: { isAuthenticated: true, user: { ...user, ...profile } },
             });
           }
         } else {
@@ -75,29 +82,37 @@ function AuthProvider({ children }) {
 
   const login = (email, password) => signInWithEmailAndPassword(AUTH, email, password);
 
-  const register = async (email, password) => {
+  const register = async (personName, email, password, userType) => {
     setCreatingNewUser(true);
-    await createUserWithEmailAndPassword(AUTH, email, password);
+    const res = await createUserWithEmailAndPassword(AUTH, email, password);
+    console.log(res.user.uid);
+    const newItme = {
+      uid: res.user.uid,
+      personName,
+      email,
+      // password: '',
+      userType,
+    };
+    UpdateUserAPI(newItme);
+
+    // const userRef = doc(DB, 'users', res.user.uid);
+    // await setDoc(userRef, { personName, email, password, userType });
     setCreatingNewUser(true);
+    return res;
   };
 
   const logout = () => signOut(AUTH);
+
   return (
     <AuthContext.Provider
       value={{
         ...state,
         method: 'firebase',
         user: {
-          _id: profile?._id || '',
           uid: state?.user?.uid,
-          arName: profile?.arName || '',
-          enName: profile?.enName || '',
-          arDescription: profile?.arDescription || '',
-          enDescription: profile?.enDescription || '',
-          phone: profile?.phone || '',
+          personName: state.user?.personName || '',
           email: state?.user?.email,
-          role: profile?.userType,
-          accessToken: state.user?.accessToken,
+          userType: state.user?.userType,
         },
         login,
         register,

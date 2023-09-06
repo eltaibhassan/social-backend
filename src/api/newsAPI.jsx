@@ -1,17 +1,4 @@
-import {
-  getFirestore,
-  collection,
-  doc,
-  getDocs,
-  setDoc,
-  deleteDoc,
-  addDoc,
-  orderBy,
-  query,
-  limit,
-  where,
-  onSnapshot,
-} from 'firebase/firestore';
+import { getFirestore, collection, doc, getDocs, setDoc, deleteDoc, addDoc, orderBy, query } from 'firebase/firestore';
 import { firebase } from '../config';
 
 const DB = getFirestore(firebase);
@@ -34,16 +21,17 @@ const getNewsAPI = async () => {
 const InsertNewsAPI = async (item) => {
   try {
     const newsRef = collection(DB, 'news');
-    await addDoc(newsRef, item);
+    return addDoc(newsRef, item);
   } catch (error) {
+    console.log(error);
     return null;
   }
 };
 
-const UpdateNewsAPI = async (item) => {
+const UpdateNewsAPI = async (id, item) => {
   try {
-    const newsRef = doc(collection(DB, 'news'), item.id);
-    await setDoc(newsRef, item);
+    const newsRef = doc(collection(DB, 'news'), id);
+    return setDoc(newsRef, item);
   } catch (error) {
     return null;
   }
@@ -52,8 +40,9 @@ const UpdateNewsAPI = async (item) => {
 const DeleteNewsAPI = async (id) => {
   try {
     const newsRef = doc(collection(DB, 'news'), id);
-    await deleteDoc(newsRef);
+    return deleteDoc(newsRef);
   } catch (error) {
+    console.log(error);
     return null;
   }
 };

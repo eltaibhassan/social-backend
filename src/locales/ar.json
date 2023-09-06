@@ -14,6 +14,29 @@
     "missingPerson": "المفقودين",
     "missingSomething": "المفقودات"
   },
+  "events_page": {
+    "events": "الفعاليات",
+    "title": "العنوان",
+    "desc": "الوصف",
+    "link": "اضافة رابط",
+    "linkText": "اسم الرابط",
+    "eventType": "نوع الفعالية",
+    "location": "العنوان",
+    "hostedBy": "الجهة المنظمة",
+    "phone": "هاتف التواصل",
+    "whatsapp": "وتساب التواصل",
+    "latitude": "latitude",
+    "longitude": "longitude",
+    "countryCode": "البلد",
+    "startDate": "تاريخ الفعالية",
+    "startTime": "زمن الفعالية",
+    "createdAt": "تاريخ الانشاء",
+    "status": "حالة النشر",
+    "image": "صورة العرض",
+    "Published": "منشور",
+    "Pending": "غير منشور"
+  },
+
   "helps_page": {
     "helps": "المساعدات",
     "needs": "طلبات المساعدة",
@@ -47,6 +70,13 @@
     "desc": "الوصف",
     "link": "رابط الاعلان",
     "comName": "اسم الشركة"
+  },
+  "users": {
+    "users": "المستخدمين",
+    "personName": "الاسم الكامل",
+    "email": "البريد الاكلتروني",
+    "password": "كلمة المرور",
+    "userType": "Editor"
   },
   "control": {
     "addnew": "اضافة جديد",

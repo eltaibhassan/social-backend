@@ -21,17 +21,19 @@ const getProCatsAPI = async () => {
 const InsertProCatAPI = async (proCat) => {
   try {
     const proCatsRef = collection(DB, 'proCats');
-    await addDoc(proCatsRef, proCat);
+    return addDoc(proCatsRef, proCat);
   } catch (error) {
+    console.log(error);
     return null;
   }
 };
 
-const UpdateProCatAPI = async (proCat) => {
+const UpdateProCatAPI = async (id, proCat) => {
   try {
-    const proCatsRef = doc(collection(DB, 'proCats'), proCat.id);
-    await setDoc(proCatsRef, proCat);
+    const proCatsRef = doc(collection(DB, 'proCats'), id);
+    return setDoc(proCatsRef, proCat);
   } catch (error) {
+    console.log(error);
     return null;
   }
 };
@@ -39,8 +41,9 @@ const UpdateProCatAPI = async (proCat) => {
 const DeleteProCatAPI = async (id) => {
   try {
     const proCatsRef = doc(collection(DB, 'proCats'), id);
-    await deleteDoc(proCatsRef);
+    return deleteDoc(proCatsRef);
   } catch (error) {
+    console.log(error);
     return null;
   }
 };

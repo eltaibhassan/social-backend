@@ -10,7 +10,7 @@ firebase deploy
 
 
 
-git add . && git commit -m "add car letter" && git push -u origin main
+git add . && git commit -m "finsh event" && git push -u origin main
 
 
 

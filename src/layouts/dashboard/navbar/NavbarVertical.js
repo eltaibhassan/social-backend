@@ -69,28 +69,8 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
           icon: getIcon('emojione-monotone:newspaper'),
         },
         {
-          title: translate('helps_page.events'),
+          title: translate('events_page.events'),
           path: '/dashboard/events',
-          icon: getIcon('emojione-monotone:newspaper'),
-        },
-        {
-          title: translate('helps_page.available'),
-          path: '/dashboard/available',
-          icon: getIcon('emojione-monotone:newspaper'),
-        },
-        {
-          title: translate('helps_page.cars'),
-          path: '/dashboard/cars',
-          icon: getIcon('emojione-monotone:newspaper'),
-        },
-        {
-          title: translate('missing.missingPerson'),
-          path: '/dashboard/missingperson',
-          icon: getIcon('emojione-monotone:newspaper'),
-        },
-        {
-          title: translate('missing.missingSomething'),
-          path: '/dashboard/missingsomething',
           icon: getIcon('emojione-monotone:newspaper'),
         },
       ],
@@ -102,10 +82,7 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
           title: translate('setting'),
           path: 'dashboard/setting',
           icon: getIcon('icon-park-twotone:setting-two'),
-          children: [
-            { title: translate('set_voteing'), path: '/dashboard/setting/setting' },
-            { title: translate('category'), path: '/dashboard/setting/category' },
-          ],
+          children: [{ title: translate('users.users'), path: '/dashboard/setting/users' }],
         },
       ],
     },

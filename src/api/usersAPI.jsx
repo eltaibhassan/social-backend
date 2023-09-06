@@ -18,20 +18,22 @@ const getUsersAPI = async () => {
   }
 };
 
-const InsertUserAPI = async (event) => {
+const InsertUserAPI = async (user) => {
   try {
-    const eventsRef = collection(DB, 'events');
-    await addDoc(eventsRef, event);
+    const usersRef = collection(DB, 'users');
+    return addDoc(usersRef, user);
   } catch (error) {
+    console.log(error);
     return null;
   }
 };
 
-const UpdateUserAPI = async (event) => {
+const UpdateUserAPI = async (user) => {
   try {
-    const eventsRef = doc(collection(DB, 'events'), event.id);
-    await setDoc(eventsRef, event);
+    const usersRef = doc(collection(DB, 'users'), user.uid);
+    return setDoc(usersRef, user);
   } catch (error) {
+    console.log(error);
     return null;
   }
 };
@@ -39,8 +41,9 @@ const UpdateUserAPI = async (event) => {
 const DeleteUserAPI = async (id) => {
   try {
     const eventsRef = doc(collection(DB, 'events'), id);
-    await deleteDoc(eventsRef);
+    return deleteDoc(eventsRef);
   } catch (error) {
+    console.log(error);
     return null;
   }
 };

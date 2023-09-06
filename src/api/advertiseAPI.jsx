@@ -44,14 +44,10 @@ const AddAdvertiseAPI = async (advertise) => {
   }
 };
 
-const UpdateAdvertiseAPI = async (advertise) => {
+const UpdateAdvertiseAPI = async (id, advertise) => {
   try {
-    // if (advertise.imgUrl === 'Published') {
-    //   await shareToSocialMedia(advertise.title, advertise.imgUrl, '');
-    // }
-    const advertisesRef = doc(collection(DB, 'advertises'), advertise.id);
-    const res = await setDoc(advertisesRef, advertise);
-    return res;
+    const advertisesRef = doc(collection(DB, 'advertises'), id);
+    return await setDoc(advertisesRef, advertise);
   } catch (error) {
     return null;
   }
