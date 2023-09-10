@@ -3,7 +3,7 @@ import { firebase } from '../config';
 
 const DB = getFirestore(firebase);
 
-const getProductsAPI = async () => {
+const getServicesAPI = async () => {
   try {
     const res = [];
     const productsRef = collection(DB, 'products');
@@ -18,7 +18,7 @@ const getProductsAPI = async () => {
   }
 };
 
-const InsertProductAPI = async (product) => {
+const InsertServiceAPI = async (product) => {
   try {
     const productsRef = collection(DB, 'products');
     return addDoc(productsRef, product);
@@ -28,7 +28,7 @@ const InsertProductAPI = async (product) => {
   }
 };
 
-const UpdateProductAPI = async (id, product) => {
+const UpdateServiceAPI = async (id, product) => {
   try {
     const productsRef = doc(collection(DB, 'products'), id);
     return setDoc(productsRef, product);
@@ -38,7 +38,7 @@ const UpdateProductAPI = async (id, product) => {
   }
 };
 
-const DeleteProductAPI = async (id) => {
+const DeleteServiceAPI = async (id) => {
   try {
     const productsRef = doc(collection(DB, 'products'), id);
     return deleteDoc(productsRef);
@@ -48,4 +48,4 @@ const DeleteProductAPI = async (id) => {
   }
 };
 
-export { getProductsAPI, InsertProductAPI, UpdateProductAPI, DeleteProductAPI };
+export { getServicesAPI, InsertServiceAPI, UpdateServiceAPI, DeleteServiceAPI };

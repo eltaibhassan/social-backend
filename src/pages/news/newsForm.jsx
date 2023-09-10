@@ -18,34 +18,28 @@ const NewsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const { translate } = useLocales();
   const { enqueueSnackbar } = useSnackbar();
   const isMountedRef = useIsMountedRef();
-  const [startDate, setStartDate] = useState(Date.now());
+  const [newsDate, setNewsDate] = useState(recordForEdit?.newsDate ?? Date.now());
 
   const countryCodeArray = [
-    { id: 'SA', arName: 'السعودية' },
-    { id: 'AE', arName: 'الامارات' },
-    { id: 'QA', arName: 'قطر' },
-    { id: 'OM', arName: 'عمان' },
-    { id: 'KW', arName: 'الكويت' },
-    { id: 'BH', arName: 'البحرين' },
-    { id: 'EG', arName: 'مصر' },
-    { id: 'US', arName: 'امريكا' },
-    { id: 'GB', arName: 'بريطانيا' },
-    { id: 'CA', arName: 'كندا' },
+    { id: 'SA', arName: 'SA' },
+    { id: 'AE', arName: 'AE' },
+    { id: 'QA', arName: 'QA' },
+    { id: 'OM', arName: 'OM' },
+    { id: 'KW', arName: 'KW' },
+    { id: 'BH', arName: 'BH' },
+    { id: 'EG', arName: 'EG' },
+    { id: 'US', arName: 'US' },
+    { id: 'GB', arName: 'GB' },
+    { id: 'CA', arName: 'CA' },
   ];
 
-  //   featureImage,
-  //  title,
-  //  arrTitle,
-  //  desc,
-  //  link,
-  //  newsCatId,
-  //  newsCatName,
-  //  newsDate,
-  //  createdAt,
-  //  createdName,
-  //  createdBy,
-  //  status,
-  //  countryCode,
+  const newsCatArray = [
+    { id: 'joys', arName: 'افراح' },
+    { id: 'condolences', arName: 'تعازي' },
+    { id: 'congratulation', arName: 'تهنئة' },
+    { id: 'news', arName: 'خبر' },
+    { id: 'other', arName: 'اخرى' },
+  ];
 
   const ItemSchema = Yup.object().shape({
     featureImage: Yup.mixed(),
@@ -53,9 +47,8 @@ const NewsForm = ({ recordForEdit, AfterAddOrEdit }) => {
     // arrTitle
     desc: Yup.string().required(`${translate('news_page.desc')} حقل مطلوب`),
     link: Yup.string(),
-    newsCatId: Yup.string(),
-    newsCatName: Yup.string(),
-    newsDate: Yup.number().required(`${translate('news_page.startDate')} حقل مطلوب`),
+    newsCat: Yup.string().required(`${translate('news_page.newsCat')} حقل مطلوب`),
+    newsDate: Yup.number().required(`${translate('news_page.newsDate')} حقل مطلوب`),
     createdAt: Yup.number(),
     createdName: Yup.string(),
     createdBy: Yup.string(),
@@ -69,8 +62,7 @@ const NewsForm = ({ recordForEdit, AfterAddOrEdit }) => {
     arrTitle: recordForEdit?.arrTitle || '',
     desc: recordForEdit?.desc || '',
     link: recordForEdit?.link || '',
-    newsCatId: recordForEdit?.newsCatId || '',
-    newsCatName: recordForEdit?.newsCatName || '',
+    newsCat: recordForEdit?.newsCat || '',
     newsDate: recordForEdit?.newsDate || new Date().getTime(),
     createdAt: recordForEdit?.createdAt || new Date().getTime(),
     createdName: recordForEdit?.createdName || user.personName,
@@ -98,7 +90,7 @@ const NewsForm = ({ recordForEdit, AfterAddOrEdit }) => {
       if (data.featureImage.type === undefined) {
         imageUrl = data.featureImage;
       } else {
-        imageUrl = await myUploadFile(data.featureImage, 'pubicImg');
+        imageUrl = await myUploadFile(data.featureImage, 'news');
       }
 
       const newItme = {
@@ -107,9 +99,8 @@ const NewsForm = ({ recordForEdit, AfterAddOrEdit }) => {
         arrTitle: data.title.split(' '),
         desc: data.desc,
         link: data.link,
-        newsCatId: data.newsCatId,
-        newsCatName: data.newsCatName,
-        newsDate: data.newsDate,
+        newsCat: data.newsCat,
+        newsDate,
         createdAt: data.createdAt,
         createdName: data.createdName,
         createdBy: data.createdBy,
@@ -117,15 +108,9 @@ const NewsForm = ({ recordForEdit, AfterAddOrEdit }) => {
         countryCode: data.countryCode,
       };
       if (recordForEdit === null) {
-        console.log('------------------------------');
-        console.log('will insert');
-        // console.log(startTime);
-
         InsertNewsAPI(newItme);
       } else {
-        console.log('------------------------------');
-        console.log('will update');
-        UpdateNewsAPI(data.id, newItme);
+        UpdateNewsAPI(recordForEdit.id, newItme);
       }
       reset();
       AfterAddOrEdit();
@@ -170,25 +155,26 @@ const NewsForm = ({ recordForEdit, AfterAddOrEdit }) => {
           >
             {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
             <RHFTextField name="title" size="small" label={translate('news_page.title')} sx={{ pb: 1 }} />
-            <RHFTextField
-              name="desc"
-              multiline
-              rows={3}
-              size="small"
-              label={translate('news_page.desc')}
-              sx={{ pb: 1 }}
-            />
+            <RHFTextField name="desc" multiline rows={3} size="small" label={translate('share.desc')} sx={{ pb: 1 }} />
             <RHFTextField name="link" size="small" label={translate('news_page.link')} sx={{ pb: 1 }} />
-            <RHFTextField name="newsCatId" size="small" label={translate('news_page.newsCatId')} sx={{ pb: 1 }} />
+
+            <RHFSelect name="newsCat" label={translate('news_page.newsCat')} sx={{ mb: 1 }}>
+              {/* <option value="" /> */}
+              {newsCatArray.map((option) => (
+                <option key={option.id} value={option.arName}>
+                  {option.arName}
+                </option>
+              ))}
+            </RHFSelect>
 
             <MyDatePicker
               label={translate('news_page.newsDate')}
               name="newsDate"
               size="small"
-              value={startDate}
+              value={newsDate}
               sx={{ pb: 1 }}
               onChange={(value) => {
-                setStartDate(value.target.value);
+                setNewsDate(value.target.value);
               }}
             />
 

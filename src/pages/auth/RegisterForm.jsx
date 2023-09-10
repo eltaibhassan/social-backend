@@ -46,7 +46,13 @@ const RegisterForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      await register(data.email, data.password, data.personName, data.userType);
+      const newItme = {
+        personName: data.personName,
+        email: data.email,
+        password: data.password,
+        userType: data.userType,
+      };
+      await register(newItme);
     } catch (error) {
       console.error(error);
       reset();

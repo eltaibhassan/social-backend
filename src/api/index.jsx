@@ -3,7 +3,6 @@ export * from './associationsAPI';
 export * from './eventsAPI';
 export * from './newsAPI';
 export * from './newsCatsAPI';
-export * from './productsAPI';
-export * from './productsCatsAPI';
+export * from './servicesAPI';
 export * from './pubFunction';
 export * from './usersAPI';

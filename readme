@@ -8,40 +8,22 @@ build // foldor
 npm run build
 firebase deploy
 
-
-
 git add . && git commit -m "finsh event" && git push -u origin main
 
-
-
-
 curl -i -X GET "https://graph.facebook.com/v16.0/oauth/access_token?  
-    grant_type=fb_exchange_token&          
-    client_id=1959934474345098&
-    client_secret=851a397fb5859678b22f311cdf3ba802&
-    fb_exchange_token=EAAb2jM4gWooBOZCd2Jw7JUaNgCPYEQ9LhmimyUU229GDBy5tYQ3zxZAUzVs5JTr6kQLr0xEjxZCUwFwQne78pzg8ZBYcZAHswJAdnXoNmpQLzx0AryxfBNdykWEomkUlCLanVyG42np93pLcA7HC7Shtaoz5KAkYkqoxIIvxmrfZB9oZAw8n51ZCjA9TcjuMr4LIlY8edZBxRqo12ccl6Ne1FQxHahfw6yqEnxJYs" 
-
-
+ grant_type=fb_exchange_token&  
+ client_id=1959934474345098&
+client_secret=851a397fb5859678b22f311cdf3ba802&
+fb_exchange_token=EAAb2jM4gWooBOZCd2Jw7JUaNgCPYEQ9LhmimyUU229GDBy5tYQ3zxZAUzVs5JTr6kQLr0xEjxZCUwFwQne78pzg8ZBYcZAHswJAdnXoNmpQLzx0AryxfBNdykWEomkUlCLanVyG42np93pLcA7HC7Shtaoz5KAkYkqoxIIvxmrfZB9oZAw8n51ZCjA9TcjuMr4LIlY8edZBxRqo12ccl6Ne1FQxHahfw6yqEnxJYs"
 
 long page aceess
 curl -i -X GET "https://graph.facebook.com/{graph-api-version}/10159259718102765/accounts?
 
-
 access_token=EAAb2jM4gWooBOwZC96ZBX0RTszPuHT3lO1U2sZB09M5djKKVwqlcsMtuOJcqYchDWMVbZAypjKDNvcQY4wgUL0003eUV6hrPipKsw69vkNHfyhTTXVd5gnD6KO271HxANydTC2IRMvZAxqAqUXeX0BoqHZCsyQBRCnIvRM3Ti520UDShXGZABPw0h9XsMx2mxO386CpgZAP412ig"
 
-
-
-
-  
 long user user
 oauth/access_token?grant_type=fb_exchange_token&client_id=1959934474345098&client_secret=851a397fb5859678b22f311cdf3ba802&fb_exchange_token=EAAb2jM4gWooBOZCd2Jw7JUaNgCPYEQ9LhmimyUU229GDBy5tYQ3zxZAUzVs5JTr6kQLr0xEjxZCUwFwQne78pzg8ZBYcZAHswJAdnXoNmpQLzx0AryxfBNdykWEomkUlCLanVyG42np93pLcA7HC7Shtaoz5KAkYkqoxIIvxmrfZB9oZAw8n51ZCjA9TcjuMr4LIlY8edZBxRqo12ccl6Ne1FQxHahfw6yqEnxJYs
 
-
-
-
-
-
-
 arName ""
 enName "حلويات ومخبوزات"
- "https://firebasestorage.googleapis.com/v0/b/sdcommunity-qa.appspot.com/o/productive%2F01.png?alt=media&token=926dae88-6ab0-46ba-8022-789d0cbf613b" 
+"https://firebasestorage.googleapis.com/v0/b/sdcommunity-qa.appspot.com/o/productive%2F01.png?alt=media&token=926dae88-6ab0-46ba-8022-789d0cbf613b"

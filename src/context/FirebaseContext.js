@@ -82,7 +82,7 @@ function AuthProvider({ children }) {
 
   const login = (email, password) => signInWithEmailAndPassword(AUTH, email, password);
 
-  const register = async (personName, email, password, userType) => {
+  const register = async ({ personName, email, password, userType }) => {
     setCreatingNewUser(true);
     const res = await createUserWithEmailAndPassword(AUTH, email, password);
     console.log(res.user.uid);

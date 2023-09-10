@@ -106,7 +106,7 @@ const EventsPage = () => {
     const newItem = {
       featureImage: item.featureImage,
       title: item.title,
-      arrTitle: item.title,
+      arrTitle: item.arrTitle,
       desc: item.desc,
       link: item.link,
       linkText: item.linkText,
@@ -136,7 +136,7 @@ const EventsPage = () => {
     const newItem = {
       featureImage: item.featureImage,
       title: item.title,
-      arrTitle: item.title,
+      arrTitle: item.arrTitle,
       desc: item.desc,
       link: item.link,
       linkText: item.linkText,

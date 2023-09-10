@@ -1,5 +1,5 @@
 import React, { useContext, createContext, useReducer } from 'react';
-import { PROCATS_FETCHING, PROCATS_SUCCESS, PROCATS_FAILED } from './type';
+import { PROCATS_FETCHING, PROCATS_SUCCESS, PROCATS_FAILED } from '../../context/type';
 
 const ProCatsStateContext = createContext();
 const ProCatsDispatchContext = createContext();

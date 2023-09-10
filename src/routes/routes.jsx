@@ -43,7 +43,7 @@ export default function Router() {
         <Route path="advertise" element={<Advertise />} />
         <Route path="events" element={<Events />} />
         <Route path="news" element={<News />} />
-        <Route path="products" element={<Products />} />
+        <Route path="services" element={<Services />} />
         <Route path="associations" element={<Associations />} />
 
         <Route path="setting">
@@ -70,4 +70,4 @@ const Advertise = Loadable(lazy(() => import('../pages/advertise/advertise')));
 const Events = Loadable(lazy(() => import('../pages/events/events')));
 const News = Loadable(lazy(() => import('../pages/news/news')));
 const Associations = Loadable(lazy(() => import('../pages/associations/associations')));
-const Products = Loadable(lazy(() => import('../pages/products/products')));
+const Services = Loadable(lazy(() => import('../pages/services/services')));

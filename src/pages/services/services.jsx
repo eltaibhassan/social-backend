@@ -16,20 +16,20 @@ import { format } from 'timeago.js';
 import { Page } from '../../components/Page';
 import useLocales from '../../hooks/useLocales';
 import { Scrollbar } from '../../components/Scrollbar';
-import { getProductsAPI, UpdateProductAPI, DeleteProductAPI } from '../../api';
+import { getServicesAPI, UpdateServiceAPI, DeleteServiceAPI } from '../../api';
 import { PRODUCTS_FETCHING, PRODUCTS_SUCCESS, PRODUCTS_FAILED } from '../../context/type';
-import { useProductsState, useProductsDispatch } from '../../context';
+import { useServicesState, useServicesDispatch } from '../../context';
 import { MyButton } from '../../components/controls';
 import { MySnackbar, ConfirmDialog, Popup, useTable, PublishMenu, MyProgress, Iconify } from '../../components/share';
 import { PublishStatusSelector } from '../share/publishStatusSelector';
-import { ProductsForm } from './productsForm';
+import { ServicesForm } from './servicesForm';
 import Image from '../../components/Image';
 import { shareToSocialMedia } from '../../api/pubFunction';
 
-const ProductsPage = () => {
+const ServicesPage = () => {
   const { translate } = useLocales();
-  const productsDispatch = useProductsDispatch();
-  const productsState = useProductsState();
+  const productsDispatch = useServicesDispatch();
+  const productsState = useServicesState();
   const { enqueueSnackbar } = useSnackbar();
   // const nav = useNavigate();
 
@@ -43,7 +43,7 @@ const ProductsPage = () => {
 
   const headCells = [
     { id: 'image', label: translate('share.image') },
-    { id: 'proName', label: translate('products_page.proName') },
+    { id: 'proName', label: translate('services_page.proName') },
     { id: 'createdAt', label: translate('share.createdAt') },
     { id: 'status', label: translate('control.status') },
     { id: 'actions', label: translate('control.action'), disableSorting: true },
@@ -53,7 +53,7 @@ const ProductsPage = () => {
     const FetchData = async () => {
       try {
         productsDispatch({ type: PRODUCTS_FETCHING });
-        const result = await getProductsAPI();
+        const result = await getServicesAPI();
         productsDispatch({ type: PRODUCTS_SUCCESS, payload: result });
       } catch (e) {
         productsDispatch({ type: PRODUCTS_FAILED });
@@ -104,28 +104,28 @@ const ProductsPage = () => {
 
   const onPublish = async (item) => {
     const newItem = {
-      proCat: item.featureImage,
-      proName: item.featureImage,
-      arrProName: item.featureImage,
-      desc: item.featureImage,
+      serviceCat: item.serviceCat,
+      title: item.title,
+      arrProName: item.arrProName,
+      desc: item.desc,
       featureImage: item.featureImage,
-      images: item.featureImage,
-      whatsapp: item.featureImage,
-      phone: item.featureImage,
-      unitBy: item.featureImage,
-      unitPrice: item.featureImage,
-      address: item.featureImage,
-      latitude: item.featureImage,
-      longitude: item.featureImage,
-      conmmentList: item.featureImage,
-      isFeatured: item.featureImage,
-      createdName: item.featureImage,
-      createdBy: item.featureImage,
-      createdAt: item.featureImage,
+      images: item.images,
+      whatsapp: item.whatsapp,
+      phone: item.phone,
+      unitBy: item.unitBy,
+      unitPrice: item.unitPrice,
+      address: item.address,
+      latitude: item.latitude,
+      longitude: item.longitude,
+      conmmentList: item.conmmentList,
+      isFeatured: item.isFeatured,
+      createdName: item.createdName,
+      createdBy: item.createdBy,
+      createdAt: item.createdAt,
       status: 'Published',
-      countryCode: item.featureImage,
+      countryCode: item.countryCode,
     };
-    await UpdateProductAPI(item.id, newItem);
+    await UpdateServiceAPI(item.id, newItem);
     setFetchDB(`edit${Math.random()}`);
     await shareToSocialMedia(item.title, item.featureImage, item.accompanyingMobile);
     // reset();
@@ -134,28 +134,28 @@ const ProductsPage = () => {
   };
   const onUnPublish = async (item) => {
     const newItem = {
-      proCat: item.featureImage,
-      proName: item.featureImage,
-      arrProName: item.featureImage,
-      desc: item.featureImage,
+      serviceCat: item.serviceCat,
+      title: item.title,
+      arrProName: item.arrProName,
+      desc: item.desc,
       featureImage: item.featureImage,
-      images: item.featureImage,
-      whatsapp: item.featureImage,
-      phone: item.featureImage,
-      unitBy: item.featureImage,
-      unitPrice: item.featureImage,
-      address: item.featureImage,
-      latitude: item.featureImage,
-      longitude: item.featureImage,
-      conmmentList: item.featureImage,
-      isFeatured: item.featureImage,
-      createdName: item.featureImage,
-      createdBy: item.featureImage,
-      createdAt: item.featureImage,
+      images: item.images,
+      whatsapp: item.whatsapp,
+      phone: item.phone,
+      unitBy: item.unitBy,
+      unitPrice: item.unitPrice,
+      address: item.address,
+      latitude: item.latitude,
+      longitude: item.longitude,
+      conmmentList: item.conmmentList,
+      isFeatured: item.isFeatured,
+      createdName: item.createdName,
+      createdBy: item.createdBy,
+      createdAt: item.createdAt,
       status: 'Pending',
-      countryCode: item.featureImage,
+      countryCode: item.countryCode,
     };
-    await UpdateProductAPI(item.id, newItem);
+    await UpdateServiceAPI(item.id, newItem);
     setFetchDB(`edit${Math.random()}`);
     // reset();
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -171,7 +171,7 @@ const ProductsPage = () => {
     console.log(id);
     console.log('-------------------------------');
 
-    DeleteProductAPI(id);
+    DeleteServiceAPI(id);
     setFetchDB(`deleted${Math.random()}`);
     setNotify({
       isOpen: true,
@@ -185,7 +185,7 @@ const ProductsPage = () => {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1}>
           <Typography variant="h4" gutterBottom>
-            {translate('products_page.products')}
+            {translate('services_page.services')}
           </Typography>
         </Stack>
 
@@ -195,7 +195,7 @@ const ProductsPage = () => {
               fullWidth
               // size="small"
               onChange={handleSearch}
-              placeholder={`${translate('control.search')} ${translate('products_page.products')}`}
+              placeholder={`${translate('control.search')} ${translate('services_page.services')}`}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -205,7 +205,7 @@ const ProductsPage = () => {
               }}
             />
             <PublishStatusSelector onSelectPublishState={onSelectPublishState} selectedValue={publishState} />
-            {/* <RHFSelect name="purpose" label={translate('products_page.purpose')} sx={{ mb: 1 }}>
+            {/* <RHFSelect name="purpose" label={translate('services_page.purpose')} sx={{ mb: 1 }}>
               {pubStatus.map((option) => (
                 <option key={option} value={option}>
                   {option}
@@ -278,11 +278,11 @@ const ProductsPage = () => {
             </Scrollbar>
           )}
           <Popup
-            title={`${translate('control.form')} ${translate('products_page.products')}`}
+            title={`${translate('control.form')} ${translate('services_page.products')}`}
             openPopup={openPopup}
             setOpenPopup={setOpenPopup}
           >
-            <ProductsForm recordForEdit={recordForEdit} AfterAddOrEdit={AfterAddOrEdit} />
+            <ServicesForm recordForEdit={recordForEdit} AfterAddOrEdit={AfterAddOrEdit} />
           </Popup>
           <MySnackbar notify={notify} setNotify={setNotify} />
           <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
@@ -291,4 +291,4 @@ const ProductsPage = () => {
     </Page>
   );
 };
-export default ProductsPage;
+export default ServicesPage;

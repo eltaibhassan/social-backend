@@ -29,7 +29,7 @@
     "title": "العنوان",
     "link": "اضافة رابط",
     "newsDate": "التاريخ",
-    "newsCatId": "التصنيف"
+    "newsCat": "التصنيف"
   },
   "share": {
     "countryCode": "البلد",
@@ -48,7 +48,7 @@
     "whatsapp": "وتساب",
     "phone": "رقم الهاتف"
   },
-  "products_page": {
+  "services_page": {
     "products": "المنتجات والخدمات",
     "proName": "اسم المنتج",
     "proCat": "تصنيف المنتج",
@@ -115,13 +115,13 @@
     "forgot_password": "هل نسيت كلمة السر؟",
     "login": "تسجيل الدخول",
     "remember_me": "تذكرنى",
-    "by_registering": "بالتسجيل ، أنت توافق على سلامات",
+    "by_registering": "بالتسجيل ، أنت توافق على المجتمع السوداني",
     "terms_of_service": "شروط الخدمة",
     "and": "و",
     "privacy_policy": "سياسة الخصوصية",
     "already_have_an_account": "هل لديك حساب؟",
     "register_user": "تسجيل مستخدم جديد",
-    "manage_the_work_more_effectively_with_MMS": "إدار اعمالك بشكل أكثر فعالية مع نظام سلامات",
+    "manage_the_work_more_effectively_with_MMS": "إدار اعمالك بشكل أكثر فعالية مع نظام المجتمع السوداني",
     "register": "تسجيل"
   }
 }

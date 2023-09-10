@@ -11,17 +11,15 @@ import { useAuth } from '../../hooks/useAuth';
 import useLocales from '../../hooks/useLocales';
 import useIsMountedRef from '../../hooks/useIsMountedRef';
 import { FormProvider, RHFTextField, RHFUploadAvatar, RHFSelect } from '../../components/hook-form';
-import { InsertProductAPI, UpdateProductAPI, myUploadFile } from '../../api';
-import { ProCatsSelector } from './proCats_Selector';
+import { InsertServiceAPI, UpdateServiceAPI, myUploadFile } from '../../api';
 
-const ProductsForm = ({ recordForEdit, AfterAddOrEdit }) => {
+const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const { user } = useAuth();
   const { translate } = useLocales();
   const { enqueueSnackbar } = useSnackbar();
   const isMountedRef = useIsMountedRef();
   const [phoneKey, setPhoneKey] = useState('+249');
   const [whatsappKey, setWhatsappKey] = useState('+249');
-  const [selectedProCat, setSelectedProCat] = useState(recordForEdit?.proCat || '');
 
   const countryCodeArray = [
     { id: 'SA', arName: 'السعودية' },
@@ -36,17 +34,24 @@ const ProductsForm = ({ recordForEdit, AfterAddOrEdit }) => {
     { id: 'CA', arName: 'كندا' },
   ];
 
+  const serviceCatArray = [
+    { id: 'productiveFamilies', arName: 'الاسر المنتجة' },
+    { id: 'vacancyJob', arName: 'وظائف شاغرة' },
+    { id: 'properties', arName: 'عقارات' },
+    { id: 'Other', arName: 'اخرى' },
+  ];
+
   const ItemSchema = Yup.object().shape({
-    proCat: Yup.string(),
-    proName: Yup.string().required(`${translate('products_page.proName')} حقل مطلوب`),
+    serviceCat: Yup.string(),
+    title: Yup.string().required(`${translate('services_page.title')} حقل مطلوب`),
     // arrProName: Yup.string(),
     desc: Yup.string(),
     featureImage: Yup.mixed(),
     images: Yup.array(),
     phone: Yup.string(),
     whatsapp: Yup.string(),
-    unitBy: Yup.string().required(`${translate('products_page.unitBy')} حقل مطلوب`),
-    unitPrice: Yup.number().required(`${translate('products_page.unitPrice')} حقل مطلوب`),
+    unitBy: Yup.string().required(`${translate('services_page.unitBy')} حقل مطلوب`),
+    unitPrice: Yup.number().required(`${translate('services_page.unitPrice')} حقل مطلوب`),
     address: Yup.string(),
     longitude: Yup.number(),
     conmmentList: Yup.array(),
@@ -59,9 +64,9 @@ const ProductsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   });
 
   const defaultValues = {
-    proCat: recordForEdit?.proCat || '',
-    proName: recordForEdit?.proName || '',
-    arrProName: recordForEdit?.proName.split(' '),
+    serviceCat: recordForEdit?.serviceCat || '',
+    title: recordForEdit?.title || '',
+    arrProName: recordForEdit?.title.split(' '),
     desc: recordForEdit?.desc || '',
     featureImage: recordForEdit?.featureImage || '',
     images: recordForEdit?.images || [],
@@ -94,10 +99,10 @@ const ProductsForm = ({ recordForEdit, AfterAddOrEdit }) => {
     formState: { errors, isSubmitting },
   } = methods;
 
-  const onSelectProCats = (val) => {
-    setSelectedProCat(val);
-    setValue('cityid', val);
-  };
+  // const onSelectProCats = (val) => {
+  //   setSelectedProCat(val);
+  //   setValue('cityid', val);
+  // };
 
   const onSubmit = async (data) => {
     try {
@@ -109,9 +114,9 @@ const ProductsForm = ({ recordForEdit, AfterAddOrEdit }) => {
       }
 
       const newItme = {
-        proCat: data.proCat,
-        proName: data.proName,
-        arrProName: data.proName.split(' '),
+        serviceCat: data.serviceCat,
+        title: data.title,
+        arrProName: data.title.split(' '),
         desc: data.desc,
         featureImage: imageUrl,
         images: data.images,
@@ -134,11 +139,11 @@ const ProductsForm = ({ recordForEdit, AfterAddOrEdit }) => {
         console.log('------------------------------');
         console.log('will insert');
 
-        InsertProductAPI(newItme);
+        InsertServiceAPI(newItme);
       } else {
         console.log('------------------------------');
         console.log('will update');
-        UpdateProductAPI(data.id, newItme);
+        UpdateServiceAPI(data.id, newItme);
       }
       reset();
       AfterAddOrEdit();
@@ -182,14 +187,24 @@ const ProductsForm = ({ recordForEdit, AfterAddOrEdit }) => {
             }}
           >
             {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
-            <ProCatsSelector onSelectProCats={onSelectProCats} selectedValue={selectedProCat} />
-            <RHFTextField name="proName" size="small" label={translate('products_page.proName')} sx={{ pb: 1 }} />
+            {/* <ProCatsSelector onSelectProCats={onSelectProCats} selectedValue={selectedProCat} /> */}
+
+            <RHFSelect name="serviceCat" label={translate('services_page.serviceCat')} sx={{ mb: 1 }}>
+              {/* <option value="" /> */}
+              {serviceCatArray.map((option) => (
+                <option key={option.id} value={option.arName}>
+                  {option.arName}
+                </option>
+              ))}
+            </RHFSelect>
+
+            <RHFTextField name="title" size="small" label={translate('services_page.title')} sx={{ pb: 1 }} />
             <RHFTextField
               name="desc"
               multiline
               rows={3}
               size="small"
-              label={translate('products_page.desc')}
+              label={translate('services_page.desc')}
               sx={{ pb: 1 }}
             />
 
@@ -202,7 +217,7 @@ const ProductsForm = ({ recordForEdit, AfterAddOrEdit }) => {
                 // pb: 1,
               }}
             >
-              <RHFTextField name="phone" size="small" label={translate('products_page.phone')} sx={{ pb: 1 }} />
+              <RHFTextField name="phone" size="small" label={translate('services_page.phone')} sx={{ pb: 1 }} />
               <PhoneInput
                 sx={{ width: 20, height: 20, color: 'green', mr: 1 }}
                 onlyCountries={['sd', 'sa', 'ae', 'qa', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
@@ -221,7 +236,7 @@ const ProductsForm = ({ recordForEdit, AfterAddOrEdit }) => {
                 // pb: 1,
               }}
             >
-              <RHFTextField name="whatsapp" size="small" label={translate('products_page.whatsapp')} sx={{ pb: 1 }} />
+              <RHFTextField name="whatsapp" size="small" label={translate('services_page.whatsapp')} sx={{ pb: 1 }} />
               <PhoneInput
                 sx={{ width: 20, height: 20, color: 'green', mr: 1 }}
                 onlyCountries={['sd', 'sa', 'ae', 'qa', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
@@ -232,14 +247,14 @@ const ProductsForm = ({ recordForEdit, AfterAddOrEdit }) => {
               />
             </Box>
 
-            <RHFTextField name="unitBy" size="small" label={translate('products_page.unitBy')} sx={{ pb: 1 }} />
-            <RHFTextField name="unitPrice" size="small" label={translate('products_page.unitPrice')} sx={{ pb: 1 }} />
-            <RHFTextField name="address" size="small" label={translate('products_page.address')} sx={{ pb: 1 }} />
-            <RHFTextField name="latitude" size="small" label={translate('products_page.latitude')} sx={{ pb: 1 }} />
-            <RHFTextField name="longitude" size="small" label={translate('products_page.longitude')} sx={{ pb: 1 }} />
+            <RHFTextField name="unitBy" size="small" label={translate('services_page.unitBy')} sx={{ pb: 1 }} />
+            <RHFTextField name="unitPrice" size="small" label={translate('services_page.unitPrice')} sx={{ pb: 1 }} />
+            <RHFTextField name="address" size="small" label={translate('services_page.address')} sx={{ pb: 1 }} />
+            <RHFTextField name="latitude" size="small" label={translate('services_page.latitude')} sx={{ pb: 1 }} />
+            <RHFTextField name="longitude" size="small" label={translate('services_page.longitude')} sx={{ pb: 1 }} />
 
             <RHFSelect name="countryCode" label={translate('share.countryCode')} sx={{ mb: 1 }}>
-              <option value="" />
+              {/* <option value=" " /> */}
               {countryCodeArray.map((option) => (
                 <option key={option.id} value={option.arName}>
                   {option.arName}
@@ -283,4 +298,4 @@ const ProductsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   );
 };
 
-export { ProductsForm };
+export { ServicesForm };

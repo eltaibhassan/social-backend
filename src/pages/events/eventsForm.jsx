@@ -21,20 +21,20 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const isMountedRef = useIsMountedRef();
   const [phoneKey, setPhoneKey] = useState('+249');
   const [whatsappKey, setWhatsappKey] = useState('+249');
-  const [startDate, setStartDate] = useState(Date.now());
-  const [startTime, setStartTime] = useState(Date.now());
+  const [startDate, setStartDate] = useState(recordForEdit?.startDate ?? Date.now());
+  const [startTime, setStartTime] = useState(recordForEdit?.startTime ?? Date.now());
 
   const countryCodeArray = [
-    { id: 'SA', arName: 'السعودية' },
-    { id: 'AE', arName: 'الامارات' },
-    { id: 'QA', arName: 'قطر' },
-    { id: 'OM', arName: 'عمان' },
-    { id: 'KW', arName: 'الكويت' },
-    { id: 'BH', arName: 'البحرين' },
-    { id: 'EG', arName: 'مصر' },
-    { id: 'US', arName: 'امريكا' },
-    { id: 'GB', arName: 'بريطانيا' },
-    { id: 'CA', arName: 'كندا' },
+    { id: 'SA', arName: 'SA' },
+    { id: 'AE', arName: 'AE' },
+    { id: 'QA', arName: 'QA' },
+    { id: 'OM', arName: 'OM' },
+    { id: 'KW', arName: 'KW' },
+    { id: 'BH', arName: 'BH' },
+    { id: 'EG', arName: 'EG' },
+    { id: 'US', arName: 'US' },
+    { id: 'GB', arName: 'GB' },
+    { id: 'CA', arName: 'CA' },
   ];
 
   const ItemSchema = Yup.object().shape({
@@ -64,7 +64,7 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const defaultValues = {
     featureImage: recordForEdit?.featureImage || '',
     title: recordForEdit?.title || '',
-    arrTitle: recordForEdit?.arrTitle || '',
+    arrTitle: recordForEdit?.arrTitle || [],
     desc: recordForEdit?.desc || '',
     link: recordForEdit?.link || '',
     linkText: recordForEdit?.linkText || '',
@@ -103,7 +103,7 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
       if (data.featureImage.type === undefined) {
         imageUrl = data.featureImage;
       } else {
-        imageUrl = await myUploadFile(data.featureImage, 'pubicImg');
+        imageUrl = await myUploadFile(data.featureImage, 'events');
       }
 
       const newItme = {
@@ -117,10 +117,10 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
         eventType: data.eventType,
         location: data.location,
         hostedBy: data.hostedBy,
-        phone: `${phoneKey}${data.phone}`,
-        whatsapp: `${whatsappKey}${data.whatsapp}`,
-        startDate: data.startDate,
-        startTime: data.startTime,
+        phone: recordForEdit?.phone ?? `${phoneKey}${data.phone}`,
+        whatsapp: recordForEdit?.whatsapp ?? `${whatsappKey}${data.whatsapp}`,
+        startDate,
+        startTime,
         latitude: data.latitude,
         longitude: data.longitude,
         createdAt: data.createdAt,
@@ -130,15 +130,27 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
         countryCode: data.countryCode,
       };
       if (recordForEdit === null) {
+        // console.log('------------------------------');
+        // console.log('will insert');
+        // console.log(startTime);
+        console.log(startDate);
+        console.log(data.startDate);
         console.log('------------------------------');
-        console.log('will insert');
+
         console.log(startTime);
+        console.log(data.startTime);
 
         InsertEventAPI(newItme);
       } else {
+        // console.log('------------------------------');
+        // console.log('will update');
+        console.log(startDate);
+        console.log(data.startDate);
         console.log('------------------------------');
-        console.log('will update');
-        UpdateEventAPI(data.id, newItme);
+
+        console.log(startTime);
+        console.log(data.startTime);
+        UpdateEventAPI(recordForEdit.id, newItme);
       }
       reset();
       AfterAddOrEdit();
@@ -183,14 +195,7 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
           >
             {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
             <RHFTextField name="title" size="small" label={translate('events_page.title')} sx={{ pb: 1 }} />
-            <RHFTextField
-              name="desc"
-              multiline
-              rows={3}
-              size="small"
-              label={translate('events_page.desc')}
-              sx={{ pb: 1 }}
-            />
+            <RHFTextField name="desc" multiline rows={3} size="small" label={translate('share.desc')} sx={{ pb: 1 }} />
             <RHFTextField name="link" size="small" label={translate('events_page.link')} sx={{ pb: 1 }} />
             <RHFTextField name="linkText" size="small" label={translate('events_page.linkText')} sx={{ pb: 1 }} />
             <RHFTextField name="eventType" size="small" label={translate('events_page.eventType')} sx={{ pb: 1 }} />

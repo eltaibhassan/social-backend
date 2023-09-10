@@ -35,21 +35,6 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   ];
 
   const ItemSchema = Yup.object().shape({
-    //  logo,
-    // name,
-    // desc,
-    // website,
-    // facebook,
-    // twitter,
-    // youtube,
-    // whatsapp,
-    // phone,
-    // createdAt,
-    // createdName,
-    // createdBy,
-    // status,
-    // countryCode,
-
     logo: Yup.mixed(),
     name: Yup.string().required(`${translate('association_page.name')} حقل مطلوب`),
     // arrTitle
@@ -78,6 +63,7 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
     youtube: recordForEdit?.youtube || '',
     phone: recordForEdit?.phone || '',
     whatsapp: recordForEdit?.whatsapp || '',
+    order: recordForEdit?.order || 0,
     createdAt: recordForEdit?.createdAt || new Date().getTime(),
     createdName: recordForEdit?.createdName || user.personName,
     createdBy: recordForEdit?.createdBy || user.uid,
@@ -104,25 +90,10 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
       if (data.logo.type === undefined) {
         imageUrl = data.logo;
       } else {
-        imageUrl = await myUploadFile(data.logo, 'pubicImg');
+        imageUrl = await myUploadFile(data.logo, 'association');
       }
 
       const newItme = {
-        // logo,
-        // name,
-        // desc,
-        // website,
-        // facebook,
-        // twitter,
-        // youtube,
-        // whatsapp,
-        // phone,
-        // createdAt,
-        // createdName,
-        // createdBy,
-        // status,
-        // countryCode,
-
         logo: imageUrl,
         name: data.name,
         arrName: data.name.split(' '),
@@ -131,8 +102,9 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
         facebook: data.facebook,
         twitter: data.twitter,
         youtube: data.youtube,
-        phone: `${phoneKey}${data.phone}`,
-        whatsapp: `${whatsappKey}${data.whatsapp}`,
+        phone: recordForEdit?.phone ?? `${phoneKey}${data.phone}`,
+        whatsapp: recordForEdit?.whatsapp ?? `${whatsappKey}${data.whatsapp}`,
+        order: 0,
         createdAt: data.createdAt,
         createdName: data.createdName,
         createdBy: data.createdBy,
@@ -146,7 +118,7 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
       } else {
         console.log('------------------------------');
         console.log('will update');
-        UpdateAssociationAPI(data.id, newItme);
+        UpdateAssociationAPI(recordForEdit.id, newItme);
       }
       reset();
       AfterAddOrEdit();

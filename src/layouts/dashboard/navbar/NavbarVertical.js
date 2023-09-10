@@ -84,8 +84,8 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
           icon: getIcon('emojione-monotone:newspaper'),
         },
         {
-          title: translate('products_page.products'),
-          path: '/dashboard/products',
+          title: translate('services_page.services'),
+          path: '/dashboard/services',
           icon: getIcon('emojione-monotone:newspaper'),
         },
       ],
