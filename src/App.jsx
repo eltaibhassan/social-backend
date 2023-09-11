@@ -12,7 +12,6 @@ import {
   AssociationsProvider,
   EventsProvider,
   NewsProvider,
-  NewsCatsProvider,
   ServicesProvider,
 } from './context';
 
@@ -28,12 +27,10 @@ export default function App() {
                   <AssociationsProvider>
                     <EventsProvider>
                       <NewsProvider>
-                        <NewsCatsProvider>
-                          <ServicesProvider>
-                            <ScrollToTop />
-                            <Router />
-                          </ServicesProvider>
-                        </NewsCatsProvider>
+                        <ServicesProvider>
+                          <ScrollToTop />
+                          <Router />
+                        </ServicesProvider>
                       </NewsProvider>
                     </EventsProvider>
                   </AssociationsProvider>

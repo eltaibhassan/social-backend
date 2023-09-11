@@ -168,7 +168,7 @@ const NewsForm = ({ recordForEdit, AfterAddOrEdit }) => {
             <RHFSelect name="newsCat" label={translate('news_page.newsCat')} sx={{ mb: 1 }}>
               {/* <option value="" /> */}
               {newsCatArray.map((option) => (
-                <option key={option.id} value={option.arName}>
+                <option key={option.id} value={option.id}>
                   {option.arName}
                 </option>
               ))}

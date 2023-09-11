@@ -19,8 +19,8 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const { translate } = useLocales();
   const { enqueueSnackbar } = useSnackbar();
   const isMountedRef = useIsMountedRef();
-  const [phoneKey, setPhoneKey] = useState('+249');
-  const [whatsappKey, setWhatsappKey] = useState('+249');
+  const [phoneKey, setPhoneKey] = useState('+974');
+  const [whatsappKey, setWhatsappKey] = useState('+974');
 
   const countryCodeArray = [
     { id: 'SA', arName: 'السعودية' },
@@ -97,8 +97,6 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
         };
         const compressedFile = await imageCompression(data.featureImage, options);
         imageUrl = await myUploadFile(compressedFile, 'association');
-
-        // imageUrl = await myUploadFile(data.logo, 'association');
       }
 
       const newItme = {
@@ -196,8 +194,8 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
               <RHFTextField name="phone" size="small" label={translate('association_page.phone')} sx={{ pb: 1 }} />
               <PhoneInput
                 sx={{ width: 20, height: 20, color: 'green', mr: 1 }}
-                onlyCountries={['sd', 'sa', 'ae', 'qa', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
-                country={'sd'}
+                onlyCountries={['qa', 'sa', 'ae', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
+                country={'qa'}
                 enableSearch="true"
                 value={phoneKey}
                 onChange={(code) => setPhoneKey(code)}
@@ -220,8 +218,8 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
               />
               <PhoneInput
                 sx={{ width: 20, height: 20, color: 'green', mr: 1 }}
-                onlyCountries={['sd', 'sa', 'ae', 'qa', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
-                country={'sd'}
+                onlyCountries={['qa', 'sa', 'ae', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
+                country={'qa'}
                 enableSearch="true"
                 value={phoneKey}
                 onChange={(code) => setWhatsappKey(code)}
@@ -231,7 +229,7 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
             <RHFSelect name="countryCode" label={translate('share.countryCode')} sx={{ mb: 1 }}>
               <option value="" />
               {countryCodeArray.map((option) => (
-                <option key={option.id} value={option.arName}>
+                <option key={option.id} value={option.id}>
                   {option.arName}
                 </option>
               ))}

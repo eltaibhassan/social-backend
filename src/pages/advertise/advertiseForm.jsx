@@ -9,7 +9,7 @@ import { LoadingButton } from '@mui/lab';
 import { useSnackbar } from 'notistack';
 import useLocales from '../../hooks/useLocales';
 import useIsMountedRef from '../../hooks/useIsMountedRef';
-import { FormProvider, RHFTextField, RHFUploadAvatar } from '../../components/hook-form';
+import { FormProvider, RHFTextField, RHFUploadAvatar, RHFSelect } from '../../components/hook-form';
 import { AddAdvertiseAPI, UpdateAdvertiseAPI, myUploadFile } from '../../api';
 import { MyDatePicker } from './DatePicker';
 
@@ -20,6 +20,19 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
 
+  const countryCodeArray = [
+    { id: 'SA', arName: 'SA' },
+    { id: 'AE', arName: 'AE' },
+    { id: 'QA', arName: 'QA' },
+    { id: 'OM', arName: 'OM' },
+    { id: 'KW', arName: 'KW' },
+    { id: 'BH', arName: 'BH' },
+    { id: 'EG', arName: 'EG' },
+    { id: 'US', arName: 'US' },
+    { id: 'GB', arName: 'GB' },
+    { id: 'CA', arName: 'CA' },
+  ];
+
   const ItemSchema = Yup.object().shape({
     title: Yup.string().required(translate('validation.catArTitle')),
     desc: Yup.string().required(translate('validation.catArTitle')),
@@ -29,6 +42,7 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
     // startDate: Yup.date(),
     // endDate: Yup.date(),
     createdAt: Yup.number(),
+    countryCode: Yup.string(),
   });
   // const current = new Date();
   // const enddate = current.setDate(current.getDate() + 30);
@@ -42,6 +56,7 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
     // startDate: recordForEdit?.startDate || new Date(),
     // endDate: recordForEdit?.endDate || new Date(),
     createdAt: recordForEdit?.createdAt || new Date().getTime(),
+    countryCode: recordForEdit?.imgUrl || 'QA',
   };
 
   const methods = useForm({
@@ -70,7 +85,7 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
           maxWidthOrHeight: 700,
         };
         const compressedFile = await imageCompression(data.imgUrl, options);
-        imageUrl = await myUploadFile(compressedFile, 'association');
+        imageUrl = await myUploadFile(compressedFile, 'advertise');
       }
 
       const newItem = {
@@ -82,6 +97,7 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
         startDate: startTime,
         endDate: endTime,
         createdAt: data.createdAt,
+        countryCode: data.countryCode,
       };
 
       if (recordForEdit === null) {
@@ -154,7 +170,15 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
                 setEndTime(momDate);
               }}
             />
-            {/* <MyDatePicker fieldName="endTime" lableName="field.endTime" /> */}
+            <RHFSelect name="countryCode" label={translate('share.countryCode')} sx={{ mb: 1 }}>
+              <option value="" />
+              {countryCodeArray.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.arName}
+                </option>
+              ))}
+            </RHFSelect>
+
             <Box sx={{ mb: 5 }}>
               <RHFUploadAvatar
                 name="imgUrl"

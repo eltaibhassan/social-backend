@@ -20,8 +20,9 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const { translate } = useLocales();
   const { enqueueSnackbar } = useSnackbar();
   const isMountedRef = useIsMountedRef();
-  const [phoneKey, setPhoneKey] = useState('+249');
-  const [whatsappKey, setWhatsappKey] = useState('+249');
+  const [phoneKey, setPhoneKey] = useState('+974');
+  const [whatsappKey, setWhatsappKey] = useState('+974');
+
   const [startDate, setStartDate] = useState(recordForEdit?.startDate ?? Date.now());
   const [startTime, setStartTime] = useState(recordForEdit?.startTime ?? Date.now());
 
@@ -110,8 +111,6 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
         };
         const compressedFile = await imageCompression(data.featureImage, options);
         imageUrl = await myUploadFile(compressedFile, 'events');
-
-        // imageUrl = await myUploadFile(data.featureImage, 'events');
       }
 
       const newItme = {
@@ -138,26 +137,8 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
         countryCode: data.countryCode,
       };
       if (recordForEdit === null) {
-        // console.log('------------------------------');
-        // console.log('will insert');
-        // console.log(startTime);
-        console.log(startDate);
-        console.log(data.startDate);
-        console.log('------------------------------');
-
-        console.log(startTime);
-        console.log(data.startTime);
-
         InsertEventAPI(newItme);
       } else {
-        // console.log('------------------------------');
-        // console.log('will update');
-        console.log(startDate);
-        console.log(data.startDate);
-        console.log('------------------------------');
-
-        console.log(startTime);
-        console.log(data.startTime);
         UpdateEventAPI(recordForEdit.id, newItme);
       }
       reset();
@@ -249,8 +230,8 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
               <RHFTextField name="phone" size="small" label={translate('events_page.phone')} sx={{ pb: 1 }} />
               <PhoneInput
                 sx={{ width: 20, height: 20, color: 'green', mr: 1 }}
-                onlyCountries={['sd', 'sa', 'ae', 'qa', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
-                country={'sd'}
+                onlyCountries={['qa', 'sa', 'ae', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
+                country={'qa'}
                 enableSearch="true"
                 value={phoneKey}
                 onChange={(code) => setPhoneKey(code)}
@@ -268,8 +249,8 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
               <RHFTextField name="whatsapp" size="small" label={translate('events_page.whatsapp')} sx={{ pb: 1 }} />
               <PhoneInput
                 sx={{ width: 20, height: 20, color: 'green', mr: 1 }}
-                onlyCountries={['sd', 'sa', 'ae', 'qa', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
-                country={'sd'}
+                onlyCountries={['qa', 'sa', 'ae', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
+                country={'qa'}
                 enableSearch="true"
                 value={phoneKey}
                 onChange={(code) => setWhatsappKey(code)}
@@ -282,7 +263,7 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
             <RHFSelect name="countryCode" label={translate('share.countryCode')} sx={{ mb: 1 }}>
               <option value="" />
               {countryCodeArray.map((option) => (
-                <option key={option.id} value={option.arName}>
+                <option key={option.id} value={option.id}>
                   {option.arName}
                 </option>
               ))}
