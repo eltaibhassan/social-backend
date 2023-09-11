@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import imageCompression from 'browser-image-compression';
 import { Stack, Alert, Card, Box, Grid, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useSnackbar } from 'notistack';
@@ -90,7 +91,13 @@ const NewsForm = ({ recordForEdit, AfterAddOrEdit }) => {
       if (data.featureImage.type === undefined) {
         imageUrl = data.featureImage;
       } else {
-        imageUrl = await myUploadFile(data.featureImage, 'news');
+        const options = {
+          maxSizeMB: 0.2,
+          maxWidthOrHeight: 700,
+        };
+        const compressedFile = await imageCompression(data.featureImage, options);
+        imageUrl = await myUploadFile(compressedFile, 'news');
+        // imageUrl = await myUploadFile(data.featureImage, 'news');
       }
 
       const newItme = {

@@ -3,13 +3,14 @@ import moment from 'moment';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import imageCompression from 'browser-image-compression';
 import { Stack, Alert, Card, Box, Grid, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useSnackbar } from 'notistack';
 import useLocales from '../../hooks/useLocales';
 import useIsMountedRef from '../../hooks/useIsMountedRef';
 import { FormProvider, RHFTextField, RHFUploadAvatar } from '../../components/hook-form';
-import { AddAdvertiseAPI, UpdateAdvertiseAPI } from '../../api/advertiseAPI';
+import { AddAdvertiseAPI, UpdateAdvertiseAPI, myUploadFile } from '../../api';
 import { MyDatePicker } from './DatePicker';
 
 const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
@@ -18,6 +19,7 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const isMountedRef = useIsMountedRef();
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
+
   const ItemSchema = Yup.object().shape({
     title: Yup.string().required(translate('validation.catArTitle')),
     desc: Yup.string().required(translate('validation.catArTitle')),
@@ -32,7 +34,6 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
   // const enddate = current.setDate(current.getDate() + 30);
 
   const defaultValues = {
-    id: recordForEdit?.id || 0,
     title: recordForEdit?.title || '',
     desc: recordForEdit?.desc || '',
     link: recordForEdit?.link || '',
@@ -51,8 +52,6 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const {
     reset,
     setError,
-    // watch,
-    // control,
     setValue,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -62,24 +61,33 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
 
   const onSubmit = async (data) => {
     try {
+      let imageUrl = 'Nil';
+      if (data.logo.type === undefined) {
+        imageUrl = data.logo;
+      } else {
+        const options = {
+          maxSizeMB: 0.2,
+          maxWidthOrHeight: 700,
+        };
+        const compressedFile = await imageCompression(data.imgUrl, options);
+        imageUrl = await myUploadFile(compressedFile, 'association');
+      }
+
       const newItem = {
-        id: data.id,
         title: data.title,
         desc: data.desc,
         link: data.link,
-        imgUrl: data.imgUrl,
+        imgUrl: imageUrl,
         comName: data.comName,
         startDate: startTime,
         endDate: endTime,
         createdAt: data.createdAt,
       };
-      console.log(data.title);
 
-      console.log(data.imgUrl);
       if (recordForEdit === null) {
         await AddAdvertiseAPI(newItem);
       } else {
-        UpdateAdvertiseAPI(newItem);
+        UpdateAdvertiseAPI(recordForEdit.id, newItem);
       }
       reset();
       AfterAddOrEdit();

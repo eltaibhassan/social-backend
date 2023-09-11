@@ -59,6 +59,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "apexcharts": "^3.35.3",
     "axios": "^0.27.2",
+    "browser-image-compression": "^2.0.2",
     "change-case": "^4.1.2",
     "date-fns": "^2.29.3",
     "docx": "^7.6.0",

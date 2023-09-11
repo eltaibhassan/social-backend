@@ -6,7 +6,7 @@ const ServicesDispatchContext = createContext();
 
 const INITIAL_STATE = {
   loading: true,
-  products: [],
+  services: [],
 };
 
 const ServicesReducer = (state, action) => {
@@ -15,10 +15,10 @@ const ServicesReducer = (state, action) => {
       return { ...state, loading: true };
     }
     case PRODUCTS_SUCCESS: {
-      return { ...state, loading: false, products: action.payload };
+      return { ...state, loading: false, services: action.payload };
     }
     case PRODUCTS_FAILED: {
-      return { ...state, products: [], loading: false };
+      return { ...state, services: [], loading: false };
     }
     default:
       return state;

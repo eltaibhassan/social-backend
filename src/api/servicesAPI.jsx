@@ -6,8 +6,8 @@ const DB = getFirestore(firebase);
 const getServicesAPI = async () => {
   try {
     const res = [];
-    const productsRef = collection(DB, 'products');
-    const q = query(productsRef, orderBy('createdAt', 'desc'));
+    const servicesRef = collection(DB, 'services');
+    const q = query(servicesRef, orderBy('createdAt', 'desc'));
     const docRefs = await getDocs(q);
     docRefs.forEach((product) => {
       res.push({ id: product.id, ...product.data() });
@@ -20,8 +20,8 @@ const getServicesAPI = async () => {
 
 const InsertServiceAPI = async (product) => {
   try {
-    const productsRef = collection(DB, 'products');
-    return addDoc(productsRef, product);
+    const servicesRef = collection(DB, 'services');
+    return addDoc(servicesRef, product);
   } catch (error) {
     console.log(error);
     return null;
@@ -30,8 +30,8 @@ const InsertServiceAPI = async (product) => {
 
 const UpdateServiceAPI = async (id, product) => {
   try {
-    const productsRef = doc(collection(DB, 'products'), id);
-    return setDoc(productsRef, product);
+    const servicesRef = doc(collection(DB, 'services'), id);
+    return setDoc(servicesRef, product);
   } catch (error) {
     console.log(error);
     return null;
@@ -40,8 +40,8 @@ const UpdateServiceAPI = async (id, product) => {
 
 const DeleteServiceAPI = async (id) => {
   try {
-    const productsRef = doc(collection(DB, 'products'), id);
-    return deleteDoc(productsRef);
+    const servicesRef = doc(collection(DB, 'services'), id);
+    return deleteDoc(servicesRef);
   } catch (error) {
     console.log(error);
     return null;

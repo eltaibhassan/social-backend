@@ -3,5 +3,5 @@ export * from './associationsContext';
 export * from './eventsContext';
 export * from './newsContext';
 export * from './newsCatsContext';
-export * from './productsContext';
+export * from './servicesContext';
 export * from './usersContext';

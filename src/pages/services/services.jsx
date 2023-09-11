@@ -28,8 +28,8 @@ import { shareToSocialMedia } from '../../api/pubFunction';
 
 const ServicesPage = () => {
   const { translate } = useLocales();
-  const productsDispatch = useServicesDispatch();
-  const productsState = useServicesState();
+  const servicesDispatch = useServicesDispatch();
+  const servicesState = useServicesState();
   const { enqueueSnackbar } = useSnackbar();
   // const nav = useNavigate();
 
@@ -43,7 +43,7 @@ const ServicesPage = () => {
 
   const headCells = [
     { id: 'image', label: translate('share.image') },
-    { id: 'proName', label: translate('services_page.proName') },
+    { id: 'title', label: translate('services_page.title') },
     { id: 'createdAt', label: translate('share.createdAt') },
     { id: 'status', label: translate('control.status') },
     { id: 'actions', label: translate('control.action'), disableSorting: true },
@@ -52,18 +52,18 @@ const ServicesPage = () => {
   useEffect(() => {
     const FetchData = async () => {
       try {
-        productsDispatch({ type: PRODUCTS_FETCHING });
+        servicesDispatch({ type: PRODUCTS_FETCHING });
         const result = await getServicesAPI();
-        productsDispatch({ type: PRODUCTS_SUCCESS, payload: result });
+        servicesDispatch({ type: PRODUCTS_SUCCESS, payload: result });
       } catch (e) {
-        productsDispatch({ type: PRODUCTS_FAILED });
+        servicesDispatch({ type: PRODUCTS_FAILED });
       }
     };
     FetchData();
-  }, [productsDispatch, fetchDB]);
+  }, [servicesDispatch, fetchDB]);
 
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } = useTable(
-    productsState.loading ? [] : productsState.products,
+    servicesState.loading ? [] : servicesState.services,
     headCells,
     filterFn
   );
@@ -105,14 +105,14 @@ const ServicesPage = () => {
   const onPublish = async (item) => {
     const newItem = {
       serviceCat: item.serviceCat,
+      serviceType: item.serviceType,
       title: item.title,
-      arrProName: item.arrProName,
+      arrTitle: item.arrTitle,
       desc: item.desc,
       featureImage: item.featureImage,
       images: item.images,
       whatsapp: item.whatsapp,
       phone: item.phone,
-      unitBy: item.unitBy,
       unitPrice: item.unitPrice,
       address: item.address,
       latitude: item.latitude,
@@ -135,14 +135,14 @@ const ServicesPage = () => {
   const onUnPublish = async (item) => {
     const newItem = {
       serviceCat: item.serviceCat,
+      serviceType: item.serviceType,
       title: item.title,
-      arrProName: item.arrProName,
+      arrTitle: item.arrTitle,
       desc: item.desc,
       featureImage: item.featureImage,
       images: item.images,
       whatsapp: item.whatsapp,
       phone: item.phone,
-      unitBy: item.unitBy,
       unitPrice: item.unitPrice,
       address: item.address,
       latitude: item.latitude,
@@ -167,10 +167,6 @@ const ServicesPage = () => {
       ...confirmDialog,
       isOpen: false,
     });
-    console.log('-----------delete--------------');
-    console.log(id);
-    console.log('-------------------------------');
-
     DeleteServiceAPI(id);
     setFetchDB(`deleted${Math.random()}`);
     setNotify({
@@ -227,7 +223,7 @@ const ServicesPage = () => {
               }}
             />
           </Stack>
-          {productsState.loading ? (
+          {servicesState.loading ? (
             <MyProgress />
           ) : (
             <Scrollbar>
@@ -243,7 +239,7 @@ const ServicesPage = () => {
                           sx={{ width: 100, height: 100, borderRadius: 1 }}
                         />
                       </TableCell>
-                      <TableCell>{item.proName}</TableCell>
+                      <TableCell>{item.title}</TableCell>
                       <TableCell>{format(item.createdAt, 'ar')}</TableCell>
                       <TableCell>{translate(`control.${item.status}`)}</TableCell>
                       {/* <TableCell>{moment('20111031', 'YYYYMMDD').fromNow()}</TableCell> */}
@@ -278,7 +274,7 @@ const ServicesPage = () => {
             </Scrollbar>
           )}
           <Popup
-            title={`${translate('control.form')} ${translate('services_page.products')}`}
+            title={`${translate('control.form')} ${translate('services_page.services')}`}
             openPopup={openPopup}
             setOpenPopup={setOpenPopup}
           >

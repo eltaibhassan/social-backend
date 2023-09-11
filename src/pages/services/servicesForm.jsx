@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import imageCompression from 'browser-image-compression';
 import { Stack, Alert, Card, Box, Grid, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useSnackbar } from 'notistack';
@@ -38,19 +39,23 @@ const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
     { id: 'productiveFamilies', arName: 'الاسر المنتجة' },
     { id: 'vacancyJob', arName: 'وظائف شاغرة' },
     { id: 'properties', arName: 'عقارات' },
-    { id: 'Other', arName: 'اخرى' },
+    { id: 'other', arName: 'اخرى' },
+  ];
+  const serviceTypeArray = [
+    { id: 'required', arName: 'مطلوب' },
+    { id: 'available', arName: 'متوفر' },
   ];
 
   const ItemSchema = Yup.object().shape({
     serviceCat: Yup.string(),
+    serviceType: Yup.string(),
     title: Yup.string().required(`${translate('services_page.title')} حقل مطلوب`),
-    // arrProName: Yup.string(),
+    // arrTitle: Yup.string(),
     desc: Yup.string(),
     featureImage: Yup.mixed(),
     images: Yup.array(),
     phone: Yup.string(),
     whatsapp: Yup.string(),
-    unitBy: Yup.string().required(`${translate('services_page.unitBy')} حقل مطلوب`),
     unitPrice: Yup.number().required(`${translate('services_page.unitPrice')} حقل مطلوب`),
     address: Yup.string(),
     longitude: Yup.number(),
@@ -65,18 +70,18 @@ const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
 
   const defaultValues = {
     serviceCat: recordForEdit?.serviceCat || '',
+    serviceType: recordForEdit?.serviceType || '',
     title: recordForEdit?.title || '',
-    arrProName: recordForEdit?.title.split(' '),
+    arrTitle: recordForEdit?.arrTitle || [],
     desc: recordForEdit?.desc || '',
     featureImage: recordForEdit?.featureImage || '',
     images: recordForEdit?.images || [],
     phone: recordForEdit?.phone || '',
     whatsapp: recordForEdit?.whatsapp || '',
-    unitBy: recordForEdit?.unitBy || '',
     unitPrice: recordForEdit?.unitPrice || 0,
     address: recordForEdit?.address || '',
-    latitude: recordForEdit?.latitude || 0,
-    longitude: recordForEdit?.longitude || 0,
+    latitude: recordForEdit?.latitude || 1.1,
+    longitude: recordForEdit?.longitude || 1.1,
     conmmentList: recordForEdit?.conmmentList || [],
     isFeatured: recordForEdit?.isFeatured || false,
     createdName: recordForEdit?.createdName || user.personName,
@@ -110,19 +115,24 @@ const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
       if (data.featureImage.type === undefined) {
         imageUrl = data.featureImage;
       } else {
-        imageUrl = await myUploadFile(data.featureImage, 'pubicImg');
+        const options = {
+          maxSizeMB: 0.2,
+          maxWidthOrHeight: 700,
+        };
+        const compressedFile = await imageCompression(data.featureImage, options);
+        imageUrl = await myUploadFile(compressedFile, 'services');
       }
 
       const newItme = {
         serviceCat: data.serviceCat,
+        serviceType: data.serviceType,
         title: data.title,
-        arrProName: data.title.split(' '),
+        arrTitle: data.title.split(' '),
         desc: data.desc,
         featureImage: imageUrl,
         images: data.images,
-        phone: `${phoneKey}${data.phone}`,
-        whatsapp: `${whatsappKey}${data.whatsapp}`,
-        unitBy: data.unitBy,
+        phone: recordForEdit?.phone ?? `${phoneKey}${data.phone}`,
+        whatsapp: recordForEdit?.whatsapp ?? `${whatsappKey}${data.whatsapp}`,
         unitPrice: data.unitPrice,
         address: data.address,
         latitude: data.latitude,
@@ -136,14 +146,9 @@ const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
         countryCode: data.countryCode,
       };
       if (recordForEdit === null) {
-        console.log('------------------------------');
-        console.log('will insert');
-
         InsertServiceAPI(newItme);
       } else {
-        console.log('------------------------------');
-        console.log('will update');
-        UpdateServiceAPI(data.id, newItme);
+        UpdateServiceAPI(recordForEdit.id, newItme);
       }
       reset();
       AfterAddOrEdit();
@@ -189,10 +194,19 @@ const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
             {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
             {/* <ProCatsSelector onSelectProCats={onSelectProCats} selectedValue={selectedProCat} /> */}
 
-            <RHFSelect name="serviceCat" label={translate('services_page.serviceCat')} sx={{ mb: 1 }}>
+            <RHFSelect name="serviceCat" label={translate('')} sx={{ mb: 1 }}>
               {/* <option value="" /> */}
               {serviceCatArray.map((option) => (
-                <option key={option.id} value={option.arName}>
+                <option key={option.id} value={option.id}>
+                  {option.arName}
+                </option>
+              ))}
+            </RHFSelect>
+
+            <RHFSelect name="serviceType" label={translate('')} sx={{ mb: 1 }}>
+              {/* <option value="" /> */}
+              {serviceTypeArray.map((option) => (
+                <option key={option.id} value={option.id}>
                   {option.arName}
                 </option>
               ))}
@@ -247,7 +261,6 @@ const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
               />
             </Box>
 
-            <RHFTextField name="unitBy" size="small" label={translate('services_page.unitBy')} sx={{ pb: 1 }} />
             <RHFTextField name="unitPrice" size="small" label={translate('services_page.unitPrice')} sx={{ pb: 1 }} />
             <RHFTextField name="address" size="small" label={translate('services_page.address')} sx={{ pb: 1 }} />
             <RHFTextField name="latitude" size="small" label={translate('services_page.latitude')} sx={{ pb: 1 }} />
