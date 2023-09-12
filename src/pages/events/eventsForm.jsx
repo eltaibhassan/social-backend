@@ -80,7 +80,7 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
     latitude: recordForEdit?.latitude || 1.1,
     longitude: recordForEdit?.longitude || 1.1,
     createdAt: recordForEdit?.createdAt || new Date().getTime(),
-    createdName: recordForEdit?.createdName || user.personName,
+    createdName: recordForEdit?.createdName || user.fullName,
     createdBy: recordForEdit?.createdBy || user.uid,
     status: recordForEdit?.status || 'Pending',
     countryCode: recordForEdit?.countryCode || 'QA',

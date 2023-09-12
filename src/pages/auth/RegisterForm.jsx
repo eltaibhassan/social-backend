@@ -19,17 +19,26 @@ const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
-    personName: Yup.string().required('First name required'),
+    fullName: Yup.string().required('First name required'),
+    phoneNo: Yup.string(),
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required'),
+    img: Yup.string(),
+    token: Yup.string(),
+    notification: Yup.string(),
     userType: Yup.string(),
   });
 
   const defaultValues = {
-    personName: '',
+    fullName: '',
+    phoneNo: '',
     email: '',
     password: '',
+    img: '',
+    token: '',
+    notification: '',
     userType: 'Editor',
+    createdAt: new Date().getTime(),
   };
 
   const methods = useForm({
@@ -47,10 +56,15 @@ const RegisterForm = () => {
   const onSubmit = async (data) => {
     try {
       const newItme = {
-        personName: data.personName,
+        fullName: data.fullName,
+        phoneNo: data.phoneNo,
         email: data.email,
         password: data.password,
+        img: data.img,
+        token: data.token,
+        notification: data.notification,
         userType: data.userType,
+        createdAt: data.createdAt,
       };
       await register(newItme);
     } catch (error) {
@@ -68,11 +82,11 @@ const RegisterForm = () => {
         {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
 
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <RHFTextField name="personName" label={translate('users.personName')} />
+          <RHFTextField name="fullName" label={translate('users.fullName')} />
         </Stack>
 
         {/* <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <RHFTextField name="enName" label={translate('users.personName')} />
+          <RHFTextField name="enName" label={translate('users.fullName')} />
         </Stack> */}
 
         {/* <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>

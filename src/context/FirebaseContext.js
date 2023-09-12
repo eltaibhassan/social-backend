@@ -82,21 +82,26 @@ function AuthProvider({ children }) {
 
   const login = (email, password) => signInWithEmailAndPassword(AUTH, email, password);
 
-  const register = async ({ personName, email, password, userType }) => {
+  const register = async ({ fullName, phoneNo, email, password, img, token, notification, userType, createdAt }) => {
     setCreatingNewUser(true);
     const res = await createUserWithEmailAndPassword(AUTH, email, password);
     console.log(res.user.uid);
     const newItme = {
       uid: res.user.uid,
-      personName,
+      fullName,
+      phoneNo,
       email,
       // password: '',
+      img,
+      token,
+      notification,
       userType,
+      createdAt,
     };
     UpdateUserAPI(newItme);
 
     // const userRef = doc(DB, 'users', res.user.uid);
-    // await setDoc(userRef, { personName, email, password, userType });
+    // await setDoc(userRef, { fullName, email, password, userType });
     setCreatingNewUser(true);
     return res;
   };
@@ -110,7 +115,7 @@ function AuthProvider({ children }) {
         method: 'firebase',
         user: {
           uid: state?.user?.uid,
-          personName: state.user?.personName || '',
+          fullName: state.user?.fullName || '',
           email: state?.user?.email,
           userType: state.user?.userType,
         },

@@ -69,14 +69,17 @@
     "createdBy": ""
   },
   "advertise": {
+    "startDate": "داية الاعلان",
+    "endDate": "نهاية الاعلان",
     "advertise": "الاعلانات",
     "title": "العنوان",
+    "desc": "وصف الاعلان",
     "link": "رابط الاعلان",
     "comName": "اسم الشركة"
   },
   "users": {
     "users": "المستخدمين",
-    "personName": "الاسم الكامل",
+    "fullName": "الاسم الكامل",
     "email": "البريد الاكلتروني",
     "password": "كلمة المرور",
     "userType": "Editor"

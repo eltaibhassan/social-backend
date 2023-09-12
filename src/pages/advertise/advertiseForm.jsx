@@ -10,8 +10,8 @@ import { useSnackbar } from 'notistack';
 import useLocales from '../../hooks/useLocales';
 import useIsMountedRef from '../../hooks/useIsMountedRef';
 import { FormProvider, RHFTextField, RHFUploadAvatar, RHFSelect } from '../../components/hook-form';
-import { AddAdvertiseAPI, UpdateAdvertiseAPI, myUploadFile } from '../../api';
-import { MyDatePicker } from './DatePicker';
+import { InsertAdvertiseAPI, UpdateAdvertiseAPI, myUploadFile } from '../../api';
+import { MyDatePicker } from '../../components/controls';
 
 const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const { translate } = useLocales();
@@ -34,10 +34,10 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
   ];
 
   const ItemSchema = Yup.object().shape({
-    title: Yup.string().required(translate('validation.catArTitle')),
-    desc: Yup.string().required(translate('validation.catArTitle')),
+    title: Yup.string().required(translate('advertise.title')),
+    desc: Yup.string().required(translate('advertise.desc')),
     link: Yup.string(),
-    imgUrl: Yup.mixed(),
+    featureImage: Yup.mixed().required(translate('advertise.featureImage')),
     comName: Yup.string(),
     // startDate: Yup.date(),
     // endDate: Yup.date(),
@@ -51,12 +51,12 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
     title: recordForEdit?.title || '',
     desc: recordForEdit?.desc || '',
     link: recordForEdit?.link || '',
-    imgUrl: recordForEdit?.imgUrl || '',
-    comName: recordForEdit?.comName || 'no name',
+    featureImage: recordForEdit?.featureImage || '',
+    comName: recordForEdit?.comName || '',
     // startDate: recordForEdit?.startDate || new Date(),
     // endDate: recordForEdit?.endDate || new Date(),
     createdAt: recordForEdit?.createdAt || new Date().getTime(),
-    countryCode: recordForEdit?.imgUrl || 'QA',
+    countryCode: recordForEdit?.countryCode || 'QA',
   };
 
   const methods = useForm({
@@ -77,22 +77,22 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const onSubmit = async (data) => {
     try {
       let imageUrl = 'Nil';
-      if (data.logo.type === undefined) {
-        imageUrl = data.logo;
+      if (data.featureImage.type === undefined) {
+        imageUrl = data.featureImage;
       } else {
         const options = {
           maxSizeMB: 0.2,
           maxWidthOrHeight: 700,
         };
-        const compressedFile = await imageCompression(data.imgUrl, options);
-        imageUrl = await myUploadFile(compressedFile, 'advertise');
+        const compressedFile = await imageCompression(data.featureImage, options);
+        imageUrl = await myUploadFile(compressedFile, 'events');
       }
 
       const newItem = {
         title: data.title,
         desc: data.desc,
         link: data.link,
-        imgUrl: imageUrl,
+        featureImage: imageUrl,
         comName: data.comName,
         startDate: startTime,
         endDate: endTime,
@@ -101,7 +101,7 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
       };
 
       if (recordForEdit === null) {
-        await AddAdvertiseAPI(newItem);
+        await InsertAdvertiseAPI(newItem);
       } else {
         UpdateAdvertiseAPI(recordForEdit.id, newItem);
       }
@@ -124,7 +124,7 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
 
       if (file) {
         setValue(
-          'imgUrl',
+          'featureImage',
           Object.assign(file, {
             preview: URL.createObjectURL(file),
           })
@@ -152,7 +152,19 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
             <RHFTextField name="desc" size="small" label={translate('advertise.desc')} sx={{ pb: 1 }} />
             <RHFTextField name="link" size="small" label={translate('advertise.link')} rows={2} sx={{ pb: 1 }} />
             <RHFTextField name="comName" size="small" label={translate('advertise.comName')} rows={2} sx={{ pb: 1 }} />
+
             <MyDatePicker
+              label={translate('advertise.startTime')}
+              name="startTime"
+              size="small"
+              value={startTime}
+              sx={{ pb: 1 }}
+              onChange={(value) => {
+                setStartTime(value.target.value);
+              }}
+            />
+
+            {/* <MyDatePicker
               fieldName="startTime"
               value={startTime}
               lableName="field.startTime"
@@ -160,8 +172,18 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
                 const momDate = moment(new Date(newValue._d)).format('YYYY-MM-DD');
                 setStartTime(momDate);
               }}
-            />
+            /> */}
             <MyDatePicker
+              label={translate('advertise.endTime')}
+              name="endTime"
+              size="small"
+              value={endTime}
+              sx={{ pb: 1 }}
+              onChange={(value) => {
+                setEndTime(value.target.value);
+              }}
+            />
+            {/* <MyDatePicker
               fieldName="endTime"
               value={endTime}
               lableName="field.endTime"
@@ -169,7 +191,7 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
                 const momDate = moment(new Date(newValue._d)).format('YYYY-MM-DD');
                 setEndTime(momDate);
               }}
-            />
+            /> */}
             <RHFSelect name="countryCode" label={translate('share.countryCode')} sx={{ mb: 1 }}>
               <option value="" />
               {countryCodeArray.map((option) => (
@@ -181,7 +203,7 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
 
             <Box sx={{ mb: 5 }}>
               <RHFUploadAvatar
-                name="imgUrl"
+                name="featureImage"
                 accept="image/*"
                 maxSize={3145728}
                 onDrop={handleDrop}

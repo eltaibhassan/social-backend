@@ -66,7 +66,7 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
     whatsapp: recordForEdit?.whatsapp || '',
     order: recordForEdit?.order || 0,
     createdAt: recordForEdit?.createdAt || new Date().getTime(),
-    createdName: recordForEdit?.createdName || user.personName,
+    createdName: recordForEdit?.createdName || user.fullName,
     createdBy: recordForEdit?.createdBy || user.uid,
     status: recordForEdit?.status || 'Pending',
     countryCode: recordForEdit?.countryCode || 'QA',
@@ -95,7 +95,7 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
           maxSizeMB: 0.2,
           maxWidthOrHeight: 700,
         };
-        const compressedFile = await imageCompression(data.featureImage, options);
+        const compressedFile = await imageCompression(data.logo, options);
         imageUrl = await myUploadFile(compressedFile, 'association');
       }
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AddIcon from '@mui/icons-material/Add';
+import moment from 'moment';
 import {
   TableBody,
   Container,
@@ -18,6 +19,7 @@ import { getAdvertisesAPI, DeleteAdvertiseAPI } from '../../api/advertiseAPI';
 import { ADVERTISE_FETCHING, ADVERTISE_SUCCESS, ADVERTISE_FAILED } from '../../context/type';
 import { useAdvertiseState, useAdvertiseDispatch } from '../../context/advertisesContext';
 import { MyButton } from '../../components/controls';
+import Image from '../../components/Image';
 import { MySnackbar, ConfirmDialog, Popup, useTable, UserMoreMenu, MyProgress, Iconify } from '../../components/share';
 import { AdvertiseForm } from './advertiseForm';
 
@@ -33,8 +35,10 @@ const AdvertisePage = () => {
   const [fetchDB, setFetchDB] = useState(null);
 
   const headCells = [
+    { id: 'image', label: translate('share.image') },
     { id: 'title', label: translate('advertise.title') },
-    { id: 'desc', label: translate('advertise.desc') },
+    { id: 'startDate', label: translate('advertise.startDate') },
+    { id: 'endDate', label: translate('advertise.endDate') },
     { id: 'actions', label: translate('control.action'), disableSorting: true },
   ];
 
@@ -144,8 +148,16 @@ const AdvertisePage = () => {
                 <TableBody>
                   {recordsAfterPagingAndSorting().map((item) => (
                     <TableRow key={item.id}>
+                      <TableCell>
+                        <Image
+                          alt="City Image"
+                          src={item.featureImage}
+                          sx={{ width: 100, height: 100, borderRadius: 1 }}
+                        />
+                      </TableCell>
                       <TableCell>{item.title}</TableCell>
-                      <TableCell>{item.desc}</TableCell>
+                      <TableCell>{moment(item.startDate).format('DD-MM-YYYY')}</TableCell>
+                      <TableCell>{moment(item.endDate).format('DD-MM-YYYY')}</TableCell>
                       <TableCell>
                         <UserMoreMenu
                           onEdit={() => {

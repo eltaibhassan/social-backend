@@ -84,7 +84,7 @@ const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
     longitude: recordForEdit?.longitude || 1.1,
     conmmentList: recordForEdit?.conmmentList || [],
     isFeatured: recordForEdit?.isFeatured || false,
-    createdName: recordForEdit?.createdName || user.personName,
+    createdName: recordForEdit?.createdName || user.fullName,
     createdBy: recordForEdit?.createdBy || user.uid,
     createdAt: recordForEdit?.createdAt || new Date().getTime(),
     status: recordForEdit?.status || 'Pending',

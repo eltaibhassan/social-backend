@@ -18,28 +18,12 @@ const getAdvertisesAPI = async () => {
   }
 };
 
-const AddAdvertiseAPI = async (advertise) => {
-  let fImageUrl = 'Nil';
+const InsertAdvertiseAPI = async (advertise) => {
   try {
-    const { title, desc, link, imgUrl, comName, startDate, endDate, createdAt } = advertise;
-    if (imgUrl !== 'Nil') {
-      fImageUrl = await myUploadFile(imgUrl, 'newAdvertise');
-    }
-
-    const dbRef = collection(DB, 'advertises');
-    const data = {
-      title,
-      desc,
-      link,
-      imgUrl: fImageUrl,
-      comName,
-      startDate,
-      endDate,
-      createdAt,
-    };
-    const res = await addDoc(dbRef, data);
-    return res;
+    const advertiseRef = collection(DB, 'advertises');
+    return addDoc(advertiseRef, advertise);
   } catch (error) {
+    console.log(error);
     return null;
   }
 };
@@ -63,4 +47,4 @@ const DeleteAdvertiseAPI = async (id) => {
   }
 };
 
-export { getAdvertisesAPI, AddAdvertiseAPI, UpdateAdvertiseAPI, DeleteAdvertiseAPI };
+export { getAdvertisesAPI, InsertAdvertiseAPI, UpdateAdvertiseAPI, DeleteAdvertiseAPI };

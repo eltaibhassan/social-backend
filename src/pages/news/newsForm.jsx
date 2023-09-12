@@ -66,7 +66,7 @@ const NewsForm = ({ recordForEdit, AfterAddOrEdit }) => {
     newsCat: recordForEdit?.newsCat || '',
     newsDate: recordForEdit?.newsDate || new Date().getTime(),
     createdAt: recordForEdit?.createdAt || new Date().getTime(),
-    createdName: recordForEdit?.createdName || user.personName,
+    createdName: recordForEdit?.createdName || user.fullName,
     createdBy: recordForEdit?.createdBy || user.uid,
     status: recordForEdit?.status || 'Pending',
     countryCode: recordForEdit?.countryCode || 'QA',
