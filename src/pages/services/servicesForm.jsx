@@ -42,8 +42,8 @@ const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
     { id: 'other', arName: 'اخرى' },
   ];
   const serviceTypeArray = [
-    { id: 'required', arName: 'مطلوب' },
     { id: 'available', arName: 'متوفر' },
+    { id: 'required', arName: 'مطلوب' },
   ];
 
   const ItemSchema = Yup.object().shape({
@@ -56,6 +56,7 @@ const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
     images: Yup.array(),
     phone: Yup.string(),
     whatsapp: Yup.string(),
+    email: Yup.string(),
     unitPrice: Yup.number().required(`${translate('services_page.unitPrice')} حقل مطلوب`),
     address: Yup.string(),
     longitude: Yup.number(),
@@ -69,8 +70,8 @@ const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
   });
 
   const defaultValues = {
-    serviceCat: recordForEdit?.serviceCat || '',
-    serviceType: recordForEdit?.serviceType || '',
+    serviceCat: recordForEdit?.serviceCat || 'productiveFamilies',
+    serviceType: recordForEdit?.serviceType || 'available',
     title: recordForEdit?.title || '',
     arrTitle: recordForEdit?.arrTitle || [],
     desc: recordForEdit?.desc || '',
@@ -78,6 +79,7 @@ const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
     images: recordForEdit?.images || [],
     phone: recordForEdit?.phone || '',
     whatsapp: recordForEdit?.whatsapp || '',
+    email: recordForEdit?.email || '',
     unitPrice: recordForEdit?.unitPrice || 0,
     address: recordForEdit?.address || '',
     latitude: recordForEdit?.latitude || 1.1,
@@ -116,8 +118,8 @@ const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
         imageUrl = data.featureImage;
       } else {
         const options = {
-          maxSizeMB: 0.2,
-          maxWidthOrHeight: 700,
+          maxSizeMB: 0.1,
+          maxWidthOrHeight: 500,
         };
         const compressedFile = await imageCompression(data.featureImage, options);
         imageUrl = await myUploadFile(compressedFile, 'services');
@@ -133,6 +135,7 @@ const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
         images: data.images,
         phone: recordForEdit?.phone ?? `${phoneKey}${data.phone}`,
         whatsapp: recordForEdit?.whatsapp ?? `${whatsappKey}${data.whatsapp}`,
+        email: data.email,
         unitPrice: data.unitPrice,
         address: data.address,
         latitude: data.latitude,
@@ -260,6 +263,7 @@ const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
                 onChange={(code) => setWhatsappKey(code)}
               />
             </Box>
+            <RHFTextField name="email" size="small" label={translate('services_page.email')} sx={{ pb: 1 }} />
 
             <RHFTextField name="unitPrice" size="small" label={translate('services_page.unitPrice')} sx={{ pb: 1 }} />
             <RHFTextField name="address" size="small" label={translate('services_page.address')} sx={{ pb: 1 }} />

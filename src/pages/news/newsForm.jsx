@@ -92,8 +92,8 @@ const NewsForm = ({ recordForEdit, AfterAddOrEdit }) => {
         imageUrl = data.featureImage;
       } else {
         const options = {
-          maxSizeMB: 0.2,
-          maxWidthOrHeight: 700,
+          maxSizeMB: 0.1,
+          maxWidthOrHeight: 500,
         };
         const compressedFile = await imageCompression(data.featureImage, options);
         imageUrl = await myUploadFile(compressedFile, 'news');

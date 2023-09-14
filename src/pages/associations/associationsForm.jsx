@@ -92,8 +92,8 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
         imageUrl = data.logo;
       } else {
         const options = {
-          maxSizeMB: 0.2,
-          maxWidthOrHeight: 700,
+          maxSizeMB: 0.1,
+          maxWidthOrHeight: 500,
         };
         const compressedFile = await imageCompression(data.logo, options);
         imageUrl = await myUploadFile(compressedFile, 'association');

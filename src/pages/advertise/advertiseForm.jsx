@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-import moment from 'moment';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -17,8 +16,11 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const { translate } = useLocales();
   const { enqueueSnackbar } = useSnackbar();
   const isMountedRef = useIsMountedRef();
-  const [startTime, setStartTime] = useState(new Date());
-  const [endTime, setEndTime] = useState(new Date());
+  // const [startTime, setStartTime] = useState(new Date());
+  // const [endTime, setEndTime] = useState(new Date());
+
+  const [startTime, setStartTime] = useState(recordForEdit?.startTime ?? Date.now());
+  const [endTime, setEndTime] = useState(recordForEdit?.endTime ?? Date.now());
 
   const countryCodeArray = [
     { id: 'SA', arName: 'SA' },
@@ -81,11 +83,11 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
         imageUrl = data.featureImage;
       } else {
         const options = {
-          maxSizeMB: 0.2,
-          maxWidthOrHeight: 700,
+          maxSizeMB: 0.1,
+          maxWidthOrHeight: 500,
         };
         const compressedFile = await imageCompression(data.featureImage, options);
-        imageUrl = await myUploadFile(compressedFile, 'events');
+        imageUrl = await myUploadFile(compressedFile, 'advertise');
       }
 
       const newItem = {
