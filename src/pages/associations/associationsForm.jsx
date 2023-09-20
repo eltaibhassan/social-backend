@@ -36,7 +36,7 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   ];
 
   const ItemSchema = Yup.object().shape({
-    logo: Yup.mixed(),
+    featureImage: Yup.mixed(),
     name: Yup.string().required(`${translate('association_page.name')} حقل مطلوب`),
     // arrTitle
     desc: Yup.string().required(`${translate('association_page.desc')} حقل مطلوب`),
@@ -54,7 +54,7 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   });
 
   const defaultValues = {
-    logo: recordForEdit?.logo || '',
+    featureImage: recordForEdit?.featureImage || '',
     name: recordForEdit?.name || '',
     arrName: recordForEdit?.arrName || '',
     desc: recordForEdit?.desc || '',
@@ -88,19 +88,19 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const onSubmit = async (data) => {
     try {
       let imageUrl = 'Nil';
-      if (data.logo.type === undefined) {
-        imageUrl = data.logo;
+      if (data.featureImage.type === undefined) {
+        imageUrl = data.featureImage;
       } else {
         const options = {
           maxSizeMB: 0.1,
           maxWidthOrHeight: 500,
         };
-        const compressedFile = await imageCompression(data.logo, options);
+        const compressedFile = await imageCompression(data.featureImage, options);
         imageUrl = await myUploadFile(compressedFile, 'association');
       }
 
       const newItme = {
-        logo: imageUrl,
+        featureImage: imageUrl,
         name: data.name,
         arrName: data.name.split(' '),
         desc: data.desc,
@@ -145,7 +145,7 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
 
       if (file) {
         setValue(
-          'logo',
+          'featureImage',
           Object.assign(file, {
             preview: URL.createObjectURL(file),
           })
@@ -237,7 +237,7 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
           </Box>
           <Box sx={{ mb: 5 }}>
             <RHFUploadAvatar
-              name="logo"
+              name="featureImage"
               accept="image/*"
               maxSize={3145728}
               onDrop={handleDrop}

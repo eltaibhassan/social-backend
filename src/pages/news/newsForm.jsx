@@ -39,7 +39,7 @@ const NewsForm = ({ recordForEdit, AfterAddOrEdit }) => {
     { id: 'condolences', arName: 'تعازي' },
     { id: 'congratulation', arName: 'تهنئة' },
     { id: 'news', arName: 'خبر' },
-    { id: 'other', arName: 'اخرى' },
+    // { id: 'other', arName: 'اخرى' },
   ];
 
   const ItemSchema = Yup.object().shape({

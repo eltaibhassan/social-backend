@@ -43,6 +43,12 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
     comName: Yup.string(),
     // startDate: Yup.date(),
     // endDate: Yup.date(),
+    phone: Yup.string(),
+    phoneKey: Yup.string(),
+    whatsapp: Yup.string(),
+    whatsappKey: Yup.string(),
+    latitude: Yup.string(),
+    longitude: Yup.string(),
     createdAt: Yup.number(),
     countryCode: Yup.string(),
   });

@@ -1,14 +1,14 @@
 import React from 'react';
 import moment from 'moment';
-import { TimePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { TextField } from '@mui/material';
 
-const MyTimePicker = (props) => {
+const MyDateTimePicker = (props) => {
   const { name, label, value, onChange, ...other } = props;
 
   function convertToDefEventPara(name, value) {
-    const momDate = moment(new Date(value)).moment().format('LT');
+    const momDate = moment(new Date(value));
     const unixDate = new Date(momDate).getTime();
     return {
       target: {
@@ -20,7 +20,7 @@ const MyTimePicker = (props) => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
-      <TimePicker
+      <DateTimePicker
         label={label}
         // inputFormat="h:mm"
         name={name}
@@ -40,4 +40,4 @@ const MyTimePicker = (props) => {
     </LocalizationProvider>
   );
 };
-export { MyTimePicker };
+export { MyDateTimePicker };

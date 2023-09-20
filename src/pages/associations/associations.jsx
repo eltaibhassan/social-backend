@@ -104,28 +104,27 @@ const AssociationsPage = () => {
     const newItem = {
       featureImage: item.featureImage,
       name: item.name,
-      arrTitle: item.name,
+      arrName: item.arrName,
       desc: item.desc,
-      link: item.link,
-      linkText: item.linkText,
-      eventType: item.eventType,
-      location: item.location,
-      hostedBy: item.hostedBy,
+      website: item.website,
+      facebook: item.facebook,
+      twitter: item.twitter,
+      youtube: item.youtube,
       phone: item.phone,
+      phoneKey: item.phoneKey,
       whatsapp: item.whatsapp,
-      startDate: item.startDate,
-      startTime: item.startTime,
-      latitude: item.latitude,
-      longitude: item.longitude,
+      whatsappKey: item.whatsappKey,
+      order: item.order,
       createdAt: item.createdAt,
       createdName: item.createdName,
       createdBy: item.createdBy,
       status: 'Published',
       countryCode: item.countryCode,
     };
+    console.log(item.id);
     await UpdateAssociationAPI(item.id, newItem);
     setFetchDB(`edit${Math.random()}`);
-    await shareToSocialMedia(item.name, item.featureImage, item.accompanyingMobile);
+    // await shareToSocialMedia(item.name, item.featureImage, item.accompanyingMobile);
     // reset();
     await new Promise((resolve) => setTimeout(resolve, 500));
     enqueueSnackbar('تم النشر بنجاح');
@@ -134,19 +133,17 @@ const AssociationsPage = () => {
     const newItem = {
       featureImage: item.featureImage,
       name: item.name,
-      arrTitle: item.name,
+      arrName: item.arrName,
       desc: item.desc,
-      link: item.link,
-      linkText: item.linkText,
-      eventType: item.eventType,
-      location: item.location,
-      hostedBy: item.hostedBy,
+      website: item.website,
+      facebook: item.facebook,
+      twitter: item.twitter,
+      youtube: item.youtube,
       phone: item.phone,
+      phoneKey: item.phoneKey,
       whatsapp: item.whatsapp,
-      startDate: item.startDate,
-      startTime: item.startTime,
-      latitude: item.latitude,
-      longitude: item.longitude,
+      whatsappKey: item.whatsappKey,
+      order: item.order,
       createdAt: item.createdAt,
       createdName: item.createdName,
       createdBy: item.createdBy,

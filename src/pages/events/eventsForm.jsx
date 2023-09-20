@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import moment from 'moment';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -13,18 +14,17 @@ import useLocales from '../../hooks/useLocales';
 import useIsMountedRef from '../../hooks/useIsMountedRef';
 import { FormProvider, RHFTextField, RHFUploadAvatar, RHFSelect } from '../../components/hook-form';
 import { InsertEventAPI, UpdateEventAPI, myUploadFile } from '../../api';
-import { MyDatePicker, MyTimePicker } from '../../components/controls';
+import { MyDateTimePicker, MyDatePicker, MyTimePicker } from '../../components/controls';
 
 const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const { user } = useAuth();
   const { translate } = useLocales();
   const { enqueueSnackbar } = useSnackbar();
   const isMountedRef = useIsMountedRef();
-  const [phoneKey, setPhoneKey] = useState('+974');
-  const [whatsappKey, setWhatsappKey] = useState('+974');
+  const [phoneKey, setPhoneKey] = useState('974');
+  const [whatsappKey, setWhatsappKey] = useState('974');
 
   const [startDate, setStartDate] = useState(recordForEdit?.startDate ?? Date.now());
-  const [startTime, setStartTime] = useState(recordForEdit?.startTime ?? Date.now());
 
   const countryCodeArray = [
     { id: 'SA', arName: 'SA' },
@@ -43,7 +43,7 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
     // id
     featureImage: Yup.mixed(),
     title: Yup.string().required(`${translate('events_page.title')} حقل مطلوب`),
-    // arrTitle
+    // phoneKey whatsappKey
     desc: Yup.string().required(`${translate('events_page.desc')} حقل مطلوب`),
     link: Yup.string(),
     linkText: Yup.string(),
@@ -51,9 +51,10 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
     location: Yup.string().required(`${translate('events_page.location')} حقل مطلوب`),
     hostedBy: Yup.string().required(`${translate('events_page.hostedBy')} حقل مطلوب`),
     phone: Yup.string(),
+    phoneKey: Yup.string(),
     whatsapp: Yup.string(),
-    startDate: Yup.number().required(`${translate('events_page.startDate')} حقل مطلوب`),
-    startTime: Yup.number().required(`${translate('events_page.startTime')} حقل مطلوب`),
+    whatsappKey: Yup.string(),
+    startDate: Yup.string().required(`${translate('events_page.startDate')} حقل مطلوب`),
     latitude: Yup.number(),
     longitude: Yup.number(),
     createdAt: Yup.number(),
@@ -74,9 +75,10 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
     location: recordForEdit?.location || '',
     hostedBy: recordForEdit?.hostedBy || '',
     phone: recordForEdit?.phone || '',
+    phoneKey: recordForEdit?.phoneKey || '',
     whatsapp: recordForEdit?.whatsapp || '',
+    whatsappKey: recordForEdit?.whatsappKey || '',
     startDate: recordForEdit?.startDate || new Date().getTime(),
-    startTime: recordForEdit?.startTime || new Date().getTime(),
     latitude: recordForEdit?.latitude || 1.1,
     longitude: recordForEdit?.longitude || 1.1,
     createdAt: recordForEdit?.createdAt || new Date().getTime(),
@@ -98,6 +100,10 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
     setValue,
     formState: { errors, isSubmitting },
   } = methods;
+
+  const setDateTime = (date) => {
+    console.log(date);
+  };
 
   const onSubmit = async (data) => {
     try {
@@ -124,10 +130,11 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
         eventType: data.eventType,
         location: data.location,
         hostedBy: data.hostedBy,
-        phone: recordForEdit?.phone ?? `${phoneKey}${data.phone}`,
-        whatsapp: recordForEdit?.whatsapp ?? `${whatsappKey}${data.whatsapp}`,
+        phone: data.phone,
+        phoneKey,
+        whatsapp: data.whatsapp,
+        whatsappKey,
         startDate,
-        startTime,
         latitude: data.latitude,
         longitude: data.longitude,
         createdAt: data.createdAt,
@@ -136,6 +143,7 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
         status: data.status,
         countryCode: data.countryCode,
       };
+      console.log(startDate);
       if (recordForEdit === null) {
         InsertEventAPI(newItme);
       } else {
@@ -198,22 +206,13 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
               }}
             >
-              <MyDatePicker
+              <MyDateTimePicker
                 label={translate('events_page.startDate')}
                 name="startDate"
                 size="small"
                 value={startDate}
                 onChange={(value) => {
                   setStartDate(value.target.value);
-                }}
-              />
-              <MyTimePicker
-                label={translate('events_page.startTime')}
-                name="startTime"
-                size="small"
-                value={startTime}
-                onChange={(value) => {
-                  setStartTime(value.target.value);
                 }}
               />
             </Box>
