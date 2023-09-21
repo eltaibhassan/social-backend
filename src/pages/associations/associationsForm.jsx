@@ -19,8 +19,8 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const { translate } = useLocales();
   const { enqueueSnackbar } = useSnackbar();
   const isMountedRef = useIsMountedRef();
-  const [phoneKey, setPhoneKey] = useState('+974');
-  const [whatsappKey, setWhatsappKey] = useState('+974');
+  const [phoneKey, setPhoneKey] = useState('974');
+  const [whatsappKey, setWhatsappKey] = useState('974');
 
   const countryCodeArray = [
     { id: 'SA', arName: 'السعودية' },
@@ -108,8 +108,10 @@ const AssociationsForm = ({ recordForEdit, AfterAddOrEdit }) => {
         facebook: data.facebook,
         twitter: data.twitter,
         youtube: data.youtube,
-        phone: recordForEdit?.phone ?? `${phoneKey}${data.phone}`,
-        whatsapp: recordForEdit?.whatsapp ?? `${whatsappKey}${data.whatsapp}`,
+        phone: data.phone,
+        phoneKey,
+        whatsapp: data.whatsapp,
+        whatsappKey,
         order: 0,
         createdAt: data.createdAt,
         createdName: data.createdName,

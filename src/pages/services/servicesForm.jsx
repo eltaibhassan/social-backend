@@ -19,8 +19,8 @@ const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const { translate } = useLocales();
   const { enqueueSnackbar } = useSnackbar();
   const isMountedRef = useIsMountedRef();
-  const [phoneKey, setPhoneKey] = useState('+974');
-  const [whatsappKey, setWhatsappKey] = useState('+974');
+  const [phoneKey, setPhoneKey] = useState('974');
+  const [whatsappKey, setWhatsappKey] = useState('974');
 
   const countryCodeArray = [
     { id: 'SA', arName: 'السعودية' },
@@ -36,9 +36,11 @@ const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
   ];
 
   const serviceCatArray = [
-    { id: 'productiveFamilies', arName: 'الاسر المنتجة' },
-    { id: 'vacancyJob', arName: 'وظائف شاغرة' },
-    { id: 'properties', arName: 'عقارات' },
+    { id: 'food', arName: 'مأكولات منزلية' },
+    { id: 'handicrafts', arName: 'حرف يدوية' },
+    { id: 'vacancyJob', arName: 'وظايف مهنية' },
+    { id: 'properties', arName: 'سكن' },
+    { id: 'sudaneseProducts', arName: 'منتجات سودانية' },
     { id: 'other', arName: 'اخرى' },
   ];
   const serviceTypeArray = [
@@ -133,8 +135,10 @@ const ServicesForm = ({ recordForEdit, AfterAddOrEdit }) => {
         desc: data.desc,
         featureImage: imageUrl,
         images: data.images,
-        phone: recordForEdit?.phone ?? `${phoneKey}${data.phone}`,
-        whatsapp: recordForEdit?.whatsapp ?? `${whatsappKey}${data.whatsapp}`,
+        phone: data.phone,
+        phoneKey,
+        whatsapp: data.whatsapp,
+        whatsappKey,
         email: data.email,
         unitPrice: data.unitPrice,
         address: data.address,
