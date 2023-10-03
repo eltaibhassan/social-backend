@@ -130,7 +130,7 @@ const ServicesPage = () => {
     };
     await UpdateServiceAPI(item.id, newItem);
     setFetchDB(`edit${Math.random()}`);
-    await shareToSocialMedia(item.title, item.featureImage, item.accompanyingMobile);
+    await shareToSocialMedia(item.title, item.featureImage);
     // reset();
     await new Promise((resolve) => setTimeout(resolve, 500));
     enqueueSnackbar('تم النشر بنجاح');

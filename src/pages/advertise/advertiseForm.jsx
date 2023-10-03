@@ -6,6 +6,7 @@ import imageCompression from 'browser-image-compression';
 import { Stack, Alert, Card, Box, Grid, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useSnackbar } from 'notistack';
+import PhoneInput from 'react-phone-input-2';
 import useLocales from '../../hooks/useLocales';
 import useIsMountedRef from '../../hooks/useIsMountedRef';
 import { FormProvider, RHFTextField, RHFUploadAvatar, RHFSelect } from '../../components/hook-form';
@@ -16,11 +17,10 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const { translate } = useLocales();
   const { enqueueSnackbar } = useSnackbar();
   const isMountedRef = useIsMountedRef();
-  // const [startTime, setStartTime] = useState(new Date());
-  // const [endTime, setEndTime] = useState(new Date());
-
-  const [startTime, setStartTime] = useState(recordForEdit?.startTime ?? Date.now());
-  const [endTime, setEndTime] = useState(recordForEdit?.endTime ?? Date.now());
+  const [startDate, setStartDate] = useState(recordForEdit?.startDate ?? Date.now());
+  const [endDate, setEndDate] = useState(recordForEdit?.endDate ?? Date.now());
+  const [phoneKey, setPhoneKey] = useState('974');
+  const [whatsappKey, setWhatsappKey] = useState('974');
 
   const countryCodeArray = [
     { id: 'SA', arName: 'SA' },
@@ -41,19 +41,17 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
     link: Yup.string(),
     featureImage: Yup.mixed().required(translate('advertise.featureImage')),
     comName: Yup.string(),
-    // startDate: Yup.date(),
-    // endDate: Yup.date(),
+    startDate: Yup.number(),
+    endDate: Yup.number(),
     phone: Yup.string(),
     phoneKey: Yup.string(),
     whatsapp: Yup.string(),
     whatsappKey: Yup.string(),
-    latitude: Yup.string(),
-    longitude: Yup.string(),
+    latitude: Yup.number(),
+    longitude: Yup.number(),
     createdAt: Yup.number(),
     countryCode: Yup.string(),
   });
-  // const current = new Date();
-  // const enddate = current.setDate(current.getDate() + 30);
 
   const defaultValues = {
     title: recordForEdit?.title || '',
@@ -61,8 +59,14 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
     link: recordForEdit?.link || '',
     featureImage: recordForEdit?.featureImage || '',
     comName: recordForEdit?.comName || '',
-    // startDate: recordForEdit?.startDate || new Date(),
-    // endDate: recordForEdit?.endDate || new Date(),
+    startDate: recordForEdit?.startDate || new Date().getTime(),
+    endDate: recordForEdit?.endDate || new Date().getTime(),
+    phone: recordForEdit?.phone || '',
+    phoneKey: recordForEdit?.phoneKey || '',
+    whatsapp: recordForEdit?.whatsapp || '',
+    whatsappKey: recordForEdit?.whatsappKey || '',
+    latitude: recordForEdit?.latitude || 1.1,
+    longitude: recordForEdit?.longitude || 1.1,
     createdAt: recordForEdit?.createdAt || new Date().getTime(),
     countryCode: recordForEdit?.countryCode || 'QA',
   };
@@ -102,8 +106,14 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
         link: data.link,
         featureImage: imageUrl,
         comName: data.comName,
-        startDate: startTime,
-        endDate: endTime,
+        startDate,
+        endDate,
+        phone: data.phone,
+        phoneKey,
+        whatsapp: data.whatsapp,
+        whatsappKey,
+        latitude: data.latitude,
+        longitude: data.longitude,
         createdAt: data.createdAt,
         countryCode: data.countryCode,
       };
@@ -162,44 +172,67 @@ const AdvertiseForm = ({ recordForEdit, AfterAddOrEdit }) => {
             <RHFTextField name="comName" size="small" label={translate('advertise.comName')} rows={2} sx={{ pb: 1 }} />
 
             <MyDatePicker
-              label={translate('advertise.startTime')}
-              name="startTime"
+              label={translate('advertise.startDate')}
+              name="startDate"
               size="small"
-              value={startTime}
+              value={startDate}
               sx={{ pb: 1 }}
               onChange={(value) => {
-                setStartTime(value.target.value);
+                setStartDate(value.target.value);
               }}
             />
 
-            {/* <MyDatePicker
-              fieldName="startTime"
-              value={startTime}
-              lableName="field.startTime"
-              onChange={(newValue) => {
-                const momDate = moment(new Date(newValue._d)).format('YYYY-MM-DD');
-                setStartTime(momDate);
-              }}
-            /> */}
             <MyDatePicker
-              label={translate('advertise.endTime')}
-              name="endTime"
+              label={translate('advertise.endDate')}
+              name="endDate"
               size="small"
-              value={endTime}
+              value={endDate}
               sx={{ pb: 1 }}
               onChange={(value) => {
-                setEndTime(value.target.value);
+                setEndDate(value.target.value);
               }}
             />
-            {/* <MyDatePicker
-              fieldName="endTime"
-              value={endTime}
-              lableName="field.endTime"
-              onChange={(newValue) => {
-                const momDate = moment(new Date(newValue._d)).format('YYYY-MM-DD');
-                setEndTime(momDate);
+            <Box
+              sx={{
+                display: 'grid',
+                columnGap: 3,
+                rowGap: 0,
+                gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
+                // pb: 1,
               }}
-            /> */}
+            >
+              <RHFTextField name="phone" size="small" label={translate('events_page.phone')} sx={{ pb: 1 }} />
+              <PhoneInput
+                sx={{ width: 20, height: 20, color: 'green', mr: 1 }}
+                onlyCountries={['qa', 'sa', 'ae', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
+                country={'qa'}
+                enableSearch="true"
+                value={phoneKey}
+                onChange={(code) => setPhoneKey(code)}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: 'grid',
+                columnGap: 3,
+                rowGap: 0,
+                gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
+                // pb: 1,
+              }}
+            >
+              <RHFTextField name="whatsapp" size="small" label={translate('events_page.whatsapp')} sx={{ pb: 1 }} />
+              <PhoneInput
+                sx={{ width: 20, height: 20, color: 'green', mr: 1 }}
+                onlyCountries={['qa', 'sa', 'ae', 'kw', 'om', 'bh', 'eg', 'us', 'gb']}
+                country={'qa'}
+                enableSearch="true"
+                value={phoneKey}
+                onChange={(code) => setWhatsappKey(code)}
+              />
+            </Box>
+            <RHFTextField name="latitude" size="small" label={translate('events_page.latitude')} sx={{ pb: 1 }} />
+            <RHFTextField name="longitude" size="small" label={translate('events_page.longitude')} sx={{ pb: 1 }} />
+
             <RHFSelect name="countryCode" label={translate('share.countryCode')} sx={{ mb: 1 }}>
               <option value="" />
               {countryCodeArray.map((option) => (

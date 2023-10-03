@@ -16,29 +16,26 @@ const myUploadFile = async (file, foldor) => {
   }
 };
 
-const shareToSocialMedia = async (title, photo, telphone) => {
+const shareToSocialMedia = async (title, photo) => {
   try {
-    // const messageItem = `شارك في البحث بانك تعمل شير - ${title}
-    // Tel: ${telphone}
-    // Google Play: https://shorturl.at/ouLQW
-    // Apple Store: https://shorturl.at/botX8
-    // #مفقود
-    // #لا_للحرب`;
-    // if (photo === 'Nil') {
-    //   facebookText({ post: messageItem });
-    // } else {
-    //   facebookMedia({ post: messageItem, mediaUrl: photo });
-    // }
+    const messageItem = `${title}
+    Google Play: https://shorturl.at/pVX25
+    Apple Store: https://shorturl.at/gnyJM`;
+    if (photo === 'Nil') {
+      facebookText({ post: messageItem });
+    } else {
+      facebookMedia({ post: messageItem, mediaUrl: photo });
+    }
   } catch (error) {
     console.log(`MyError: ${error}`);
   }
 };
 
-const facebookText = async (post) => {
+const facebookText = async ({ post }) => {
   try {
     await axios.post(`https://graph.facebook.com/${process.env.REACT_APP_FACEBOOKPAGEID}/feed`, {
       message: post,
-      access_token: process.env.APP_TOKEN,
+      access_token: process.env.REACT_APP_FACEBOOKPAGETOKEN,
     });
   } catch (error) {
     console.log(`MyError: ${error}`);
@@ -48,13 +45,6 @@ const facebookText = async (post) => {
 const facebookMedia = async ({ post, mediaUrl }) => {
   try {
     // const { post, mediaUrl } = req.body;
-    console.log(post);
-    console.log(mediaUrl);
-    console.log(process.env.REACT_APP_FACEBOOKPAGEID);
-    console.log(process.env.REACT_APP_FACEBOOKPAGETOKEN);
-
-    // console.log(telphone);
-
     await axios.post(`https://graph.facebook.com/${process.env.REACT_APP_FACEBOOKPAGEID}/photos`, {
       url: mediaUrl,
       message: post,

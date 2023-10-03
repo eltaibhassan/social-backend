@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import moment from 'moment';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,7 +13,7 @@ import useLocales from '../../hooks/useLocales';
 import useIsMountedRef from '../../hooks/useIsMountedRef';
 import { FormProvider, RHFTextField, RHFUploadAvatar, RHFSelect } from '../../components/hook-form';
 import { InsertEventAPI, UpdateEventAPI, myUploadFile } from '../../api';
-import { MyDateTimePicker, MyDatePicker, MyTimePicker } from '../../components/controls';
+import { MyDateTimePicker } from '../../components/controls';
 
 const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
   const { user } = useAuth();
@@ -100,10 +99,6 @@ const EventsForm = ({ recordForEdit, AfterAddOrEdit }) => {
     setValue,
     formState: { errors, isSubmitting },
   } = methods;
-
-  const setDateTime = (date) => {
-    console.log(date);
-  };
 
   const onSubmit = async (data) => {
     try {

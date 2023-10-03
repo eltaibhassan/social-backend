@@ -24,7 +24,6 @@ import { MySnackbar, ConfirmDialog, Popup, useTable, PublishMenu, MyProgress, Ic
 import { PublishStatusSelector } from '../share/publishStatusSelector';
 import { AssociationsForm } from './associationsForm';
 import Image from '../../components/Image';
-import { shareToSocialMedia } from '../../api/pubFunction';
 
 const AssociationsPage = () => {
   const { translate } = useLocales();
@@ -124,7 +123,6 @@ const AssociationsPage = () => {
     console.log(item.id);
     await UpdateAssociationAPI(item.id, newItem);
     setFetchDB(`edit${Math.random()}`);
-    // await shareToSocialMedia(item.name, item.featureImage, item.accompanyingMobile);
     // reset();
     await new Promise((resolve) => setTimeout(resolve, 500));
     enqueueSnackbar('تم النشر بنجاح');

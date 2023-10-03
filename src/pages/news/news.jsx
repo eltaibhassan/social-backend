@@ -118,8 +118,8 @@ const NewsPage = () => {
       countryCode: item.countryCode,
     };
     await UpdateNewsAPI(item.id, newItem);
+    await shareToSocialMedia(item.title, item.featureImage);
     setFetchDB(`edit${Math.random()}`);
-    await shareToSocialMedia(item.title, item.featureImage, item.accompanyingMobile);
     // reset();
     await new Promise((resolve) => setTimeout(resolve, 500));
     enqueueSnackbar('تم النشر بنجاح');
